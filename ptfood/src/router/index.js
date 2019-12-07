@@ -6,6 +6,7 @@ import Login from "../views/Login.vue";
 import FoodList from "../views/FoodList.vue";
 import AddFood from "../views/AddFood.vue";
 import OrderList from "../views/OrderList.vue";
+import Signup from "../views/Signup.vue";
 
 import BootstrapVue from "bootstrap-vue";
 
@@ -51,6 +52,11 @@ const routes = [
     name: "orderlist",
     component: OrderList
 
+  },
+  {
+    path: "/signup",
+    name: "signup",
+    component: Signup
   }
 ];
 
