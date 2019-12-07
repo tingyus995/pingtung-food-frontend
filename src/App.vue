@@ -6,6 +6,11 @@
       <router-link :to="{ name: 'login' }">登入</router-link>
     </div>
     <router-view />
+
+
+
+
+
   </div>
 </template>
 
