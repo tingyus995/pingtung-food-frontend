@@ -10,11 +10,18 @@
           src="../assets/tomato_rice.webp"
         />
       </div>
-      <div class="card-body">
+      <div class="food-card card-body">
         <h5 class="card-title">番茄炒飯</h5>
+        <h6><font-awesome-icon icon="store-alt"></font-awesome-icon>捲捲泰式料理</h6>
+        <p class="tags card-text text-left">
+          <span class="badge badge-success">番茄</span>
+          <span class="badge badge-success">炒飯</span>
+          <span class="badge badge-success">營養</span>
+        </p>
         <p class="card-text text-left">
           牛番茄果肉厚實, 滋味甜美, 籽少口感佳, 拿來炒飯最適合了。
         </p>
+
         <div class="d-flex justify-content-between align-items-center">
           <span class="price">$350 起</span>
           <div class="btn-group">
@@ -49,5 +56,12 @@ export default {
 }
 .food-list .price{
   font-weight: bold;
+}
+.tags span{
+  margin: 0 5px;
+  font-size: 0.8rem;
+}
+.food-card h6{
+  color:rgb(109, 109, 109);
 }
 </style>
