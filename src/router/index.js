@@ -9,6 +9,8 @@ import OrderList from "../views/OrderList.vue";
 import Signup from "../views/Signup.vue";
 import Cart from "../views/Cart.vue";
 import Favorite from "../views/Favorite.vue";
+import Profile from "../views/Profile.vue";
+import CartHistory from "../views/CartHistory.vue";
 
 import BootstrapVue from "bootstrap-vue";
 
@@ -69,6 +71,16 @@ const routes = [
     path:"/favorite",
     name:"favorite",
     component: Favorite
+  },
+  {
+    path: "/profile",
+    name : "profile",
+    component: Profile
+  },
+  {
+    path:"/cart/history",
+    name : "carthistory",
+    component: CartHistory
   }
 ];
 
