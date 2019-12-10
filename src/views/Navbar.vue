@@ -19,10 +19,15 @@
       <b-nav-item>
         <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'profile' }">我的帳號</router-link>
       </b-nav-item>
-
+      <b-nav-item>
+        <router-link v-if="isLoggedIn && type== 'shop'" :to="{ name: 'myfoods' }">我的食物</router-link>
+      </b-nav-item>
 
       <b-nav-item>
         <router-link v-if="isLoggedIn && type== 'shop'" :to="{ name: 'addfood' }">新增食物</router-link>
+      </b-nav-item>
+      <b-nav-item>
+        <router-link v-if="isLoggedIn && type== 'shop'" :to="{ name: 'orderlist' }">檢視訂單</router-link>
       </b-nav-item>
 
 
@@ -50,6 +55,9 @@ export default {
   },
   computed: {
 
+  },
+  beforeMount(){
+    this.checkLogin();
   },
   methods: {
     logout() {

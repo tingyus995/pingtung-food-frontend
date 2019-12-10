@@ -1,5 +1,6 @@
 <template>
   <div class="add-food container-fluid">
+     <b-alert v-if="!orders.length" show variant="info">清單內沒有食物喔！</b-alert>
     <div class="card" v-for="(order,index) in orders" :key="index">
       <div class="card-header">
         <font-awesome-icon icon="store-alt"></font-awesome-icon>

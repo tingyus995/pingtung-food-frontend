@@ -1,7 +1,10 @@
 <template>
   <div id="app">
       <Navbar />
+
+      <transition name="slide-fade">
     <router-view :orders="orders" @cart_add="addToCart" @cart_remove="removeFromCart" @remove_order="removeOrder" />
+      </transition>
   </div>
 </template>
 <script>
@@ -118,5 +121,16 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-
+.slide-fade-enter-active {
+  transition: all .8s ease;
+}
+.slide-fade-leave-active {
+  
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active for below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
 </style>
+

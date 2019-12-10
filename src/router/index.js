@@ -17,6 +17,8 @@ import OrderHistory from "../views/OrderHistory.vue";
 import OrderList from "../views/OrderList.vue";
 import ShopSignup from "../views/ShopSignup.vue";
 import ShopLogin from "../views/ShopLogin.vue"
+import EditFood from "../views/EditFood.vue"
+import MyFoods from "../views/MyFoods.vue"
 
 
 // bootstrap
@@ -102,6 +104,17 @@ const routes = [
     path: "/shop/addfood",
     name: "addfood",
     component: AddFood
+  },
+  {
+    path :"/shop/editfood",
+    name :"editfood",
+    component: EditFood,
+    props : true
+  },
+  {
+    path : "/shop/myfoods",
+    name : "myfoods",
+    component: MyFoods
   },
   {
     path: "/shop/login",

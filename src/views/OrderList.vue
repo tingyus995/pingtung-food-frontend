@@ -3,7 +3,7 @@
     <div class="card" v-for="(order, index) in orders" :key="index">
       <div class="card-header">
         <font-awesome-icon icon="user"></font-awesome-icon>
-        {{ order.user.name }}
+        {{ order.student.name }}
       </div>
 
       <div class="card-body">
@@ -46,7 +46,7 @@ export default {
   data() {
     return {
       orders: [
-        {
+        /*{
           notified: false,
           finished: false,
           rejected: false,
@@ -69,9 +69,31 @@ export default {
               price: 60
             }
           ]
-        }
+        }*/
       ]
     };
+  },
+
+  created(){
+        let self = this;
+           let token = localStorage.getItem("token");
+        let config = {
+          headers: { Authorization: "bearer " + token }
+        };
+
+        this.$http
+          .get("/order/shop", config)
+          .then(function(response) {
+            console.log(response);
+            self.orders = response.data;
+            //self.$emit('signupComplete', response.data);
+            
+            
+            //self.$router.push({ name: "addfood" });
+          })
+          .catch(function(error) {
+            //console.log(JSON.stringify(error.response.data));
+          });
   },
   methods: {
     totalPrice(order) {
@@ -95,15 +117,17 @@ export default {
     },
 
     finishBtnDisable(order){
-      if(order.rejected) return true;
-      if(!order.notified) return true;
-      return order.finished;
+      if(order.status === 'rejected') return true;
+      if(!order.status === 'notified') return true;
+      if(order.status === 'finished') return true;
+      return false;
     },
 
     notifyBtnDisable(order){
-      if(order.rejected) return true;
-      if(order.finished) return true;
-      return order.notified;
+      if(order.status === 'rejected') return true;
+      if(order.status === 'finished') return true;
+      if(order.status === 'notified') return true;
+      return false;
     },
 
 
