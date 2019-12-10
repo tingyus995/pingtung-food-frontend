@@ -63,24 +63,29 @@ const routes = [
     component: Signup
   },
   {
-    path:"/cart",
-    name : "cart",
+    path: "/cart",
+    name: "cart",
     component: Cart
   },
   {
-    path:"/favorite",
-    name:"favorite",
+    path: "/favorite",
+    name: "favorite",
     component: Favorite
   },
   {
     path: "/profile",
-    name : "profile",
+    name: "profile",
     component: Profile
   },
   {
-    path:"/cart/history",
-    name : "carthistory",
+    path: "/carthistory",
+    name: "carthistory",
     component: CartHistory
+  },
+
+  {
+    path: '*',
+    redirect: '/',
   }
 ];
 
