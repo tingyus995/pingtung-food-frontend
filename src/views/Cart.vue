@@ -2,10 +2,11 @@
   <div class="add-food container-fluid">
     <div class="card" v-for="(order,index) in orders" :key="index">
       <div class="card-header">
-        <font-awesome-icon icon="store-alt"></font-awesome-icon>{{ order.shop}}
+        <font-awesome-icon icon="store-alt"></font-awesome-icon>
+        {{ order.shop}}
       </div>
 
-      <div class="card-body" >
+      <div class="card-body">
         <ul class="list-group list-group-flush">
           <li class="list-group-item text-center" v-if="!order.items.length">沒有訂單</li>
 
@@ -14,7 +15,7 @@
             <span class="badge badge-success">{{ item.amount }}</span>
             <div class="float-right right-price">
               <div class="price">{{ item.amount }} x {{item.price }}</div>
-              <button class="btn btn-danger" @click.prevent="deleteItem(order, item)">
+              <button class="btn btn-danger" @click.prevent="deleteItem(item)">
                 <font-awesome-icon icon="trash-alt"></font-awesome-icon>
               </button>
             </div>
@@ -26,7 +27,11 @@
         共{{ totalPrice(order) }}元
       </div>
       <div class="btn-group">
-        <button :disabled="!order.items.length" class="btn btn-primary">
+        <button
+          :disabled="!order.items.length"
+          @click="placeTheOrder(order)"
+          class="btn btn-primary"
+        >
           <font-awesome-icon icon="money-check-alt"></font-awesome-icon>下訂單
         </button>
       </div>
@@ -38,43 +43,15 @@
 export default {
   name: "cart",
   components: {},
+  props: ["orders"],
   data() {
-    return {
-      orders: [
-        {
-          shop: "捲捲泰式料理",
-          items: [
-            {
-              id: 1,
-              name: "番茄炒飯",
-              amount: 1,
-              price: 150
-            },
-            {
-              id: 2,
-              name: "鮮奶茶",
-              amount: 2,
-              price: 60
-            }
-          ]
-        }
-      ],
-
-      tag: "",
-      tags: []
-    };
+    return {};
   },
   methods: {
-    deleteItem(order, i) {
-      //console.log("debug");
-      //console.log(id);
-      order.items = order.items.filter(item => {
-        return item != i;
-      });
-      //this.orders.splice(1,1);
-      //console.log(this.orders);
+    deleteItem(item) {
+      this.$emit("cart_remove", item);
     },
-        totalPrice(order) {
+    totalPrice(order) {
       console.log(order);
       let price = 0;
 
@@ -83,11 +60,34 @@ export default {
       });
 
       return price;
+    },
+    placeTheOrder(order) {
+      let self = this;
+      console.log("debug");
+      if (order.items.length) {
+        
+
+        let token = localStorage.getItem("token");
+        let config = {
+          headers: { Authorization: "bearer " + token }
+        };
+
+        this.$http
+          .post("/order", order, config)
+          .then(function(response) {
+            console.log(response);
+            //self.$emit('signupComplete', response.data);
+            
+            self.$emit('remove_order', order);
+            //self.$router.push({ name: "addfood" });
+          })
+          .catch(function(error) {
+            //console.log(JSON.stringify(error.response.data));
+          });
+      }
     }
   },
-  computed: {
-
-  }
+  computed: {}
 };
 </script>
 

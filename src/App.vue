@@ -1,7 +1,7 @@
 <template>
   <div id="app">
       <Navbar />
-    <router-view />
+    <router-view :orders="orders" @cart_add="addToCart" @cart_remove="removeFromCart" @remove_order="removeOrder" />
   </div>
 </template>
 <script>
@@ -11,11 +11,98 @@ import Navbar from "./views/Navbar"
 export default {
   data(){
     return {
-
+      
+      orders : []
+      
     }
   },
   components:{
     Navbar
+  },
+  methods: {
+    
+    
+    addToCart(item){
+
+
+
+        let found = false;
+
+        this.orders.forEach(ord => {
+          if(ord.shopId === item.shopId){
+            found = true;
+          }
+        })
+
+
+        if(!found){
+          // never seen the shop before
+          
+          this.orders.push({
+            shop: item.shop,
+            shopId: item.shopId,
+            items : []
+          })
+        }
+        // shop is there
+        // find target order
+        this.orders.map(ord => {
+          if(ord.shopId === item.shopId){
+            // found target order
+            // find target item
+            let found = false;
+            
+            ord.items.map(it => {
+              if(it._id === item._id){
+                // found target item
+                found = true;
+                it.amount += 1;
+              }
+              return it;
+            })
+
+            if(!found){
+              ord.items.push({
+                name : item.name,
+                _id: item._id,
+                price : item.price,
+                amount : 1
+              })
+            }
+            
+          }
+          return ord;
+        })     
+
+      console.log(this.orders);
+
+    },
+    removeFromCart(item){
+      this.orders.map(ord => {
+        ord.items.map(it => {
+          if(it._id === item._id){
+            it.amount -= 1;            
+          }
+          return it;
+        })
+
+        ord.items = ord.items.filter(it => {
+          return it.amount >= 1
+        })
+        return ord;
+      })
+
+      this.orders = this.orders.filter(ord => {
+        return ord.items.length > 0
+      })
+    
+    },
+    removeOrder(order){
+      console.log("removing order");
+      this.orders = this.orders.filter(ord => {
+        return ord != order;
+      })
+    }
   },
   created(){
     console.log("created");
