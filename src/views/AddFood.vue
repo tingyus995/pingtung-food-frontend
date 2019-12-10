@@ -1,6 +1,7 @@
 <template>
   <div class="add-food container-fluid">
     <form>
+      <b-alert variant="success" show>開始新增食物，讓使用者購買吧！</b-alert>
       <div class="form-group">
         <label for="foodName">食物名稱</label>
         <input type="text" class="form-control" id="foodName" placeholder="e.g. 什錦炒麵" />
@@ -15,16 +16,16 @@
         <input type="file" class="form-control-file" id="foodPhoto" />
       </div>
 
-
       <div class="form-group">
-           <vue-tags-input
-      v-model="tag"
-      :tags="tags"
-      @tags-changed="newTags => tags = newTags"
-      
-    />
-
+        <vue-tags-input v-model="tag" :tags="tags" @tags-changed="newTags => tags = newTags" />
       </div>
+
+
+      <button
+        class="btn btn-lg btn-primary btn-block"
+        type="submit"
+        @click.prevent="createStudent"
+      >新增食物</button>
 
 
     </form>
@@ -32,16 +33,16 @@
 </template>
 
 <script>
-import VueTagsInput from '@johmun/vue-tags-input';
+import VueTagsInput from "@johmun/vue-tags-input";
 export default {
   name: "foods",
-  components : {
+  components: {
     VueTagsInput
   },
   data() {
     return {
-      tag : '',
-      tags : []
+      tag: "",
+      tags: []
     };
   }
 };
@@ -57,24 +58,22 @@ export default {
   font-weight: bold;
 }
 
-
-.vue-tags-input{
-  max-width:none !important;
-  width:100%;
+.vue-tags-input {
+  max-width: none !important;
+  width: 100%;
 }
-.ti-input{
+.ti-input {
   border-radius: 0.25rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+    -webkit-box-shadow 0.15s ease-in-out;
 }
 
-.ti-input:hover{
+.ti-input:hover {
   color: #495057;
-    background-color: #fff;
-    border-color: #80bdff;
-    outline: 0;
-    -webkit-box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  background-color: #fff;
+  border-color: #80bdff;
+  outline: 0;
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
-
-
 </style>

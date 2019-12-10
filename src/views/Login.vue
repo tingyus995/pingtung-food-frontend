@@ -55,7 +55,7 @@ export default {
           console.log(response);
           //self.$emit('signupComplete', response.data);
           localStorage.setItem('token', response.data.token);
-          localStorage.setItem('user', response.data.user);
+          localStorage.setItem('user', response.data.user.type);
           self.$bus.$emit('logged', 'User logged in.')
           self.$router.push({name : 'foods'})
         })

@@ -3,13 +3,14 @@
     <form class="form-signin">
       <!--<img class="mb-4" src="/docs/4.4/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">-->
       <h1 class="h3 mb-3 font-weight-normal">申請一個帳號</h1>
-      <label for="inputName" class="sr-only">姓名</label>
+      <b-alert variant="success" show>提醒您，這裡是店家端帳號申請頁面，如果您是學生，請按<router-link :to="{name:'signup'}">這裡</router-link>前往學生端登入頁面。</b-alert>
+      <label for="inputName" class="sr-only">店家名稱</label>
       <input
         v-model="user.name"
         type="text"
         id="inputName"
         class="form-control"
-        placeholder="姓名"
+        placeholder="店家名稱"
         required
         autofocus
       />
@@ -65,12 +66,15 @@ export default {
       console.log(this.user);
 
       this.$http
-      .post("/student", this.user)
+      .post("/shop", this.user)
         .then(function(response) {
           console.log(response);
           //self.$emit('signupComplete', response.data);
           localStorage.setItem('token', response.data.token);
           localStorage.setItem('user', response.data.user.type);
+
+          self.$bus.$emit('logged', 'User logged in.')
+          self.$router.push({name : 'addfood'})
         })
         .catch(function(error) {
           console.log(JSON.stringify(error.response.data));

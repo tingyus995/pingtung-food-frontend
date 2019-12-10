@@ -2,17 +2,8 @@
   <div class="login container-fluid">
     <form class="form-signin">
       <!--<img class="mb-4" src="/docs/4.4/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">-->
-      <h1 class="h3 mb-3 font-weight-normal">申請一個帳號</h1>
-      <label for="inputName" class="sr-only">姓名</label>
-      <input
-        v-model="user.name"
-        type="text"
-        id="inputName"
-        class="form-control"
-        placeholder="姓名"
-        required
-        autofocus
-      />
+      <h1 class="h3 mb-3 font-weight-normal">店家端登入</h1>
+       <b-alert v-if="errorMsg" show variant="danger">{{ errorMsg }}</b-alert>
       <label for="inputEmail" class="sr-only">Email</label>
       <input
         v-model="user.email"
@@ -21,6 +12,7 @@
         class="form-control"
         placeholder="E-mail"
         required
+        autofocus
       />
       <label for="inputPassword" class="sr-only">密碼</label>
       <input
@@ -32,48 +24,45 @@
         required
       />
       <div class="checkbox mb-3">
-        <label>
-          <input type="checkbox" value="remember-me" /> 我同意使用者合約
-        </label>
+        <label> <input type="checkbox" value="remember-me" /> 記住我 </label>
       </div>
-      <button
-        class="btn btn-lg btn-primary btn-block"
-        type="submit"
-        @click.prevent="createStudent"
-      >建立帳號</button>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" @click.prevent="startLogin">
+        登入
+      </button>
       <p class="mt-5 mb-3 text-muted">&copy; 2017-2019</p>
     </form>
   </div>
 </template>
 
 <script>
-//import axios from "axios";
 export default {
-  name: "signup",
+  name: "login",
   data() {
     return {
-      user: {
-        name: "",
-        email: "",
-        password: ""
-      }
-    }; 
+      user : {
+        email : "",
+        password : ""
+      },
+      errorMsg : null
+    };
   },
-  methods: {
-    createStudent() {
+  methods : {
+    startLogin(){
       let self = this;
-      console.log(this.user);
-
-      this.$http
-      .post("/student", this.user)
+            this.$http
+      .post("/shop/login", this.user)
         .then(function(response) {
           console.log(response);
           //self.$emit('signupComplete', response.data);
           localStorage.setItem('token', response.data.token);
           localStorage.setItem('user', response.data.user.type);
+          self.$bus.$emit('logged', 'User logged in.')
+          self.$router.push({name : 'foods'})
         })
         .catch(function(error) {
+          console.log(error.response.data);
           console.log(JSON.stringify(error.response.data));
+          self.errorMsg = "帳號或密碼錯誤"
         });
     }
   }
@@ -81,22 +70,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
-.form-signin input {
-  border-radius: 0px;
-}
-.form-signin input:first-of-type {
-  margin-bottom: -1px;
-  border-top-right-radius: 4px;
-  border-top-left-radius: 4px;
-}
-
-.form-signin input:last-of-type {
-  margin-top: -1px;
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-
+<style lang="scss" scoped>
 .form-signin {
   width: 100%;
   max-width: 330px;
@@ -115,5 +89,15 @@ export default {
 }
 .form-signin .form-control:focus {
   z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 </style>

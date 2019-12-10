@@ -8,17 +8,26 @@
         <router-link to="/about">About</router-link>
       </b-nav-item>
       <b-nav-item>
-        <router-link v-if="isLoggedIn" :to="{ name: 'foods' }">食物列表</router-link>
+        <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'foods' }">食物列表</router-link>
       </b-nav-item>
       <b-nav-item>
-        <router-link v-if="isLoggedIn" :to="{ name: 'cart' }">購買清單</router-link>
+        <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'cart' }">購買清單</router-link>
       </b-nav-item>
       <b-nav-item>
-        <router-link v-if="isLoggedIn" :to="{ name: 'carthistory' }">訂單查詢</router-link>
+        <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'carthistory' }">訂單查詢</router-link>
       </b-nav-item>
       <b-nav-item>
-        <router-link v-if="isLoggedIn" :to="{ name: 'profile' }">我的帳號</router-link>
+        <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'profile' }">我的帳號</router-link>
       </b-nav-item>
+
+
+      <b-nav-item>
+        <router-link v-if="isLoggedIn && type== 'shop'" :to="{ name: 'addfood' }">新增食物</router-link>
+      </b-nav-item>
+
+
+
+
 
       <b-nav-item>
         <a v-if="isLoggedIn" @click.prevent="logout">登出</a>
@@ -35,7 +44,8 @@ export default {
   name: "Navbar",
   data() {
     return {
-      isLoggedIn : false
+      isLoggedIn : false,
+      type : 'guest'
     };
   },
   computed: {
@@ -45,11 +55,12 @@ export default {
     logout() {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      this.$bus.$emit('logged','User logged out.');
+      this.$bus.$emit('logged','User logged out.');      
       this.$router.push("/login");
     },
     checkLogin() {
       this.isLoggedIn = localStorage.getItem("token") !== null;
+      this.type = localStorage.getItem("user");
     }
   },
   created(){
