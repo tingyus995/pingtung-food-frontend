@@ -26,17 +26,7 @@ Vue.prototype.$bus = eventBus;
 
 
 
-router.beforeEach((to, from, next)=>{
-  const isLogin = localStorage.getItem('token') != null;
-  if( isLogin ){
-    next();
-  } else {
-    if( to.path !== '/login' && to.path !== '/signup' && to.path !=='/')
-      next('/login');
-    else
-      next();
-  }
-});
+
 
 
 Vue.config.productionTip = false;
