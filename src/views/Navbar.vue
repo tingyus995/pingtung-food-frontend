@@ -14,7 +14,7 @@
         <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'cart' }">購買清單</router-link>
       </b-nav-item>
       <b-nav-item>
-        <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'carthistory' }">訂單查詢</router-link>
+        <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'orderhistory' }">訂單查詢</router-link>
       </b-nav-item>
       <b-nav-item>
         <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'profile' }">我的帳號</router-link>

@@ -2,7 +2,7 @@
   <div class="add-food container-fluid">
     <div class="card" v-for="(order,index) in orders" :key="index">
       <div class="card-header">
-         <b-badge class="float-left">已完成</b-badge>
+         <b-badge class="float-left">{{ getStatus(order) }}</b-badge>
         <font-awesome-icon icon="store-alt"></font-awesome-icon>{{ order.shop}}
       </div>
 
@@ -31,11 +31,12 @@
 
 <script>
 export default {
-  name: "cart",
+  name: "orderhistory",
   components: {},
   data() {
     return {
-      orders: [
+      orders : []
+      /*orders: [
         {
           shop: "捲捲泰式料理",
           items: [
@@ -56,20 +57,44 @@ export default {
       ],
 
       tag: "",
-      tags: []
+      tags: []*/
     };
   },
+  created(){
+    let self = this;
+           let token = localStorage.getItem("token");
+        let config = {
+          headers: { Authorization: "bearer " + token }
+        };
+
+        this.$http
+          .get("/order", config)
+          .then(function(response) {
+            console.log(response);
+            self.orders = response.data;
+            //self.$emit('signupComplete', response.data);
+            
+            
+            //self.$router.push({ name: "addfood" });
+          })
+          .catch(function(error) {
+            //console.log(JSON.stringify(error.response.data));
+          });
+  },
+
   methods: {
-    deleteItem(order, i) {
-      //console.log("debug");
-      //console.log(id);
-      order.items = order.items.filter(item => {
-        return item != i;
-      });
-      //this.orders.splice(1,1);
-      //console.log(this.orders);
-    },
-        totalPrice(order) {
+      getStatus(order){
+        if(order.status == 'created'){
+          return "訂單成立"
+        }else if(order.status == 'finished'){
+          return "訂單完成"
+        }else if(order.status == 'ready'){
+          return "可取餐"
+        }else if(order.status == 'rejected'){
+          return "訂單被拒絕"
+        }
+      },
+      totalPrice(order) {
       console.log(order);
       let price = 0;
 

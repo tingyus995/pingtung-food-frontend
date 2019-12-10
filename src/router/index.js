@@ -10,7 +10,7 @@ import Signup from "../views/Signup.vue";
 import Cart from "../views/Cart.vue";
 import Favorite from "../views/Favorite.vue";
 import Profile from "../views/Profile.vue";
-import CartHistory from "../views/CartHistory.vue";
+import OrderHistory from "../views/OrderHistory.vue";
 
 // shop
 
@@ -76,9 +76,9 @@ const routes = [
     component: Profile
   },
   {
-    path: "/carthistory",
-    name: "carthistory",
-    component: CartHistory
+    path: "/orderhistory",
+    name: "orderhistory",
+    component: OrderHistory
   },
 
   {
