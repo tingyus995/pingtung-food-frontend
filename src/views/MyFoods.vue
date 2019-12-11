@@ -24,7 +24,7 @@
               <font-awesome-icon icon="edit"></font-awesome-icon>編輯
             </button>
             <button type="button" class="btn btn-sm btn-danger" @click="deleteFood(item)">
-              <font-awesome-icon icon="edit"></font-awesome-icon>刪除
+              <font-awesome-icon icon="trash-alt"></font-awesome-icon>刪除
             </button>
           </div>
           <small class="text-muted">

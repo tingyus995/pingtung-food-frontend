@@ -3,6 +3,7 @@ import "./plugins/fontawesome";
 import App from "./App.vue";
 import router from "./router";
 import axios from "axios";
+import VueSocketIO from 'vue-socket.io'
 import eventBus from "./eventBus";
 
 axios.defaults.timeout = 5000;
@@ -25,7 +26,13 @@ Vue.prototype.$bus = eventBus;
 );*/
 
 
-
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: 'http://localhost:3030',
+  vuex: {      
+  },
+  //options: { path: "/my-app/" } //Optional options
+}))
 
 
 

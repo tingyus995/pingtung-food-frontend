@@ -1,116 +1,183 @@
 <template>
   <div id="app">
-      <Navbar :orders="orders" />
+    <Navbar :orders="orders" :notifications="notifications"/>
+    
+    <b-alert v-for="(no,index) in notifications" :key="index" show="true" :variant="no.varient" @dismissed="deleteNotification(index)"  dismissible>
+      {{ no.message }}
+    </b-alert>
 
-      <transition name="slide-fade">
-    <router-view :orders="orders" @cart_add="addToCart" @cart_remove="removeFromCart" @remove_order="removeOrder" />
-      </transition>
+
+    <transition name="slide-fade">
+      <router-view
+        :orders="orders"
+        :shopOrders="shopOrders"
+        
+        @cart_add="addToCart"
+        @cart_remove="removeFromCart"
+        @remove_order="removeOrder"
+      />
+    </transition>
   </div>
 </template>
 <script>
-
-import Navbar from "./views/Navbar"
+import Navbar from "./views/Navbar";
 
 export default {
-  data(){
+  data() {
     return {
-      
-      orders : []
-      
-    }
+      orders: [], // for student
+      shopOrders: [], // for shop
+      notifications : [],
+      showDismissibleAlert: true
+    };
   },
-  components:{
+  components: {
     Navbar
   },
+  sockets: {
+    connect() {
+      console.log("socket connected.");
+      this.$socket.emit("auth", localStorage.getItem("token"));
+    }
+  },
+  beforeMount() {
+    console.log("created hello");
+    /*this.sockets.subscribe('hello', data => {
+      console.log(data);
+    })*/
+    this.sockets.subscribe("new_order", data => { // for shop
+      console.log("new_order");
+      //console.log(data);
+      console.log(data);
+      this.shopOrders.push(data);
+      console.log(this.shopOrders);
+    });
+
+    this.sockets.subscribe("order_change", data => { // for student
+      console.log("order_ready");
+      //console.log(data);
+      console.log(data);
+      //this.shopOrders.unshift(data);      
+      //console.log(this.shopOrders);
+      let verb = ''
+      let varient = 'info'
+      if(data.status === 'rejected'){
+        verb = '被拒絕'
+        varient = 'danger';
+      }else if (data.status === 'finished'){
+        verb = '已完成'
+      } else if (data.status === 'notified'){
+        verb = '可以去拿'
+      }
+
+      this.notifications.push({varient ,message :  '一個訂單已經' + verb + '囉！'});
+
+
+    });
+  },
   methods: {
-    
-    
-    addToCart(item){
+    deleteNotification(index){
+      this.notifications.splice(index,1)
+    },
+    addToCart(item) { // for students
+      let found = false;
 
-
-
-        let found = false;
-
-        this.orders.forEach(ord => {
-          if(ord.shopId === item.shopId){
-            found = true;
-          }
-        })
-
-
-        if(!found){
-          // never seen the shop before
-          
-          this.orders.push({
-            shop: item.shop,
-            shopId: item.shopId,
-            items : []
-          })
+      this.orders.forEach(ord => {
+        if (ord.shopId === item.shopId) {
+          found = true;
         }
-        // shop is there
-        // find target order
-        this.orders.map(ord => {
-          if(ord.shopId === item.shopId){
-            // found target order
-            // find target item
-            let found = false;
-            
-            ord.items.map(it => {
-              if(it._id === item._id){
-                // found target item
-                found = true;
-                it.amount += 1;
-              }
-              return it;
-            })
+      });
 
-            if(!found){
-              ord.items.push({
-                name : item.name,
-                _id: item._id,
-                price : item.price,
-                amount : 1
-              })
+      if (!found) {
+        // never seen the shop before
+
+        this.orders.push({
+          shop: item.shop,
+          shopId: item.shopId,
+          items: []
+        });
+      }
+      // shop is there
+      // find target order
+      this.orders.map(ord => {
+        if (ord.shopId === item.shopId) {
+          // found target order
+          // find target item
+          let found = false;
+
+          ord.items.map(it => {
+            if (it._id === item._id) {
+              // found target item
+              found = true;
+              it.amount += 1;
             }
-            
+            return it;
+          });
+
+          if (!found) {
+            ord.items.push({
+              name: item.name,
+              _id: item._id,
+              price: item.price,
+              amount: 1
+            });
           }
-          return ord;
-        })     
+        }
+        return ord;
+      });
 
       console.log(this.orders);
-
     },
-    removeFromCart(item){
+    removeFromCart(item) { // for students
       this.orders.map(ord => {
         ord.items.map(it => {
-          if(it._id === item._id){
-            it.amount -= 1;            
+          if (it._id === item._id) {
+            it.amount -= 1;
           }
           return it;
-        })
+        });
 
         ord.items = ord.items.filter(it => {
-          return it.amount >= 1
-        })
+          return it.amount >= 1;
+        });
         return ord;
-      })
+      });
 
       this.orders = this.orders.filter(ord => {
-        return ord.items.length > 0
-      })
-    
+        return ord.items.length > 0;
+      });
     },
-    removeOrder(order){
+    removeOrder(order) {
       console.log("removing order");
       this.orders = this.orders.filter(ord => {
         return ord != order;
-      })
+      });
     }
   },
-  created(){
-    console.log("created");
+  created() {
+    if (localStorage.getItem("user") === "shop") { // for shops
+      // get all orders
+      let self = this;
+      let token = localStorage.getItem("token");
+      let config = {
+        headers: { Authorization: "bearer " + token }
+      };
+
+      this.$http
+        .get("/order/shop", config)
+        .then(function(response) {
+          console.log(response);
+          self.shopOrders = response.data;
+          //self.$emit('signupComplete', response.data);
+
+          //self.$router.push({ name: "addfood" });
+        })
+        .catch(function(error) {
+          //console.log(JSON.stringify(error.response.data));
+        });
+    }
   }
-}
+};
 </script>
 <style lang="scss">
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
@@ -122,10 +189,9 @@ export default {
   color: #2c3e50;
 }
 .slide-fade-enter-active {
-  transition: all .8s ease;
+  transition: all 0.8s ease;
 }
 .slide-fade-leave-active {
-  
 }
 .slide-fade-enter, .slide-fade-leave-to
 /* .slide-fade-leave-active for below version 2.1.8 */ {

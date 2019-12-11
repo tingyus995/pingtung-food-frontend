@@ -14,7 +14,7 @@
         <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'cart' }">購買清單 <b-badge v-if="orderCount > 0" variant="info">{{orderCount }}</b-badge></router-link>
       </b-nav-item>
       <b-nav-item>
-        <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'orderhistory' }">訂單查詢</router-link>
+        <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'orderhistory' }">訂單查詢 <b-badge v-if="notifications.length > 0" variant="info">{{ notifications.length }}</b-badge> </router-link>
       </b-nav-item>
       <b-nav-item>
         <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'profile' }">我的帳號</router-link>
@@ -51,7 +51,7 @@
 <script>
 export default {
   name: "Navbar",
-  props : ['orders'],
+  props : ['orders','notifications'],
   data() {
     return {
       isLoggedIn : false,
@@ -98,6 +98,8 @@ export default {
   },
   created(){
     let self = this;
+
+    //console.log(notifications);
     this.$bus.$on('logged', ()=>{
       self.checkLogin();
     })

@@ -1,8 +1,8 @@
 <template>
   <div class="add-food container container-fluid">
-    <div class="card" v-for="(order,index) in orders" :key="index">
+    <div class="card" v-for="(order,index) in orders.slice().reverse()" :key="index">
       <div class="card-header">
-         <b-badge class="float-left">{{ getStatus(order) }}</b-badge>
+         <div class="status"><b-badge :variant="getVariant(order)" class="float-left">{{ getStatus(order) }}</b-badge></div>
         <font-awesome-icon icon="store-alt"></font-awesome-icon>{{ order.shop}}
       </div>
 
@@ -80,6 +80,27 @@ export default {
           .catch(function(error) {
             //console.log(JSON.stringify(error.response.data));
           });
+
+
+      
+    this.sockets.subscribe("order_change", data => { // for student
+      console.log("LISTENED_FROM_ORDERHISTORY_PAGE");
+      //console.log(data);
+      console.log(data);
+
+      this.orders.map(ord => {
+        if(ord._id === data._id){
+          ord.status = data.status;
+        }
+        return ord;
+      })
+
+
+      //this.shopOrders.unshift(data);
+      //console.log(this.shopOrders);
+    });
+
+
   },
 
   methods: {
@@ -88,10 +109,23 @@ export default {
           return "訂單成立"
         }else if(order.status == 'finished'){
           return "訂單完成"
-        }else if(order.status == 'ready'){
-          return "可取餐"
+        }else if(order.status == 'notified'){
+          return "已通知取餐"
         }else if(order.status == 'rejected'){
-          return "訂單被拒絕"
+          return "已拒絕訂單"
+        }
+      },
+      getVariant(order){
+
+         console.log("debug varient");
+        if(order.status == 'created'){
+          return "primary"
+        }else if(order.status == 'finished'){
+          return "secondary"
+        }else if(order.status == 'notified'){
+          return "warning"
+        }else if(order.status == 'rejected'){
+          return "danger"
         }
       },
       totalPrice(order) {
@@ -119,4 +153,5 @@ export default {
 .right-price .price {
   padding-right: 10px;
 }
+
 </style>
