@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-      <Navbar />
+      <Navbar :orders="orders" />
 
       <transition name="slide-fade">
     <router-view :orders="orders" @cart_add="addToCart" @cart_remove="removeFromCart" @remove_order="removeOrder" />

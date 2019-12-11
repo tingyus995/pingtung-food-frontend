@@ -11,7 +11,7 @@
         <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'foods' }">食物列表</router-link>
       </b-nav-item>
       <b-nav-item>
-        <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'cart' }">購買清單</router-link>
+        <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'cart' }">購買清單 <b-badge v-if="orderCount > 0" variant="info">{{orderCount }}</b-badge></router-link>
       </b-nav-item>
       <b-nav-item>
         <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'orderhistory' }">訂單查詢</router-link>
@@ -28,6 +28,10 @@
       </b-nav-item>
       <b-nav-item>
         <router-link v-if="isLoggedIn && type== 'shop'" :to="{ name: 'orderlist' }">檢視訂單</router-link>
+      </b-nav-item>
+
+            <b-nav-item>
+        <router-link v-if="isLoggedIn && type== 'shop'" :to="{ name: 'shopprofile' }">店家設定</router-link>
       </b-nav-item>
 
 
@@ -47,6 +51,7 @@
 <script>
 export default {
   name: "Navbar",
+  props : ['orders'],
   data() {
     return {
       isLoggedIn : false,
@@ -61,14 +66,34 @@ export default {
   },
   methods: {
     logout() {
+      let type = localStorage.getItem('user');
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       this.$bus.$emit('logged','User logged out.');      
-      this.$router.push("/login");
+      if(type === 'student'){
+        this.$router.push("/login");
+      }else{
+        this.$router.push("/shop/login")
+      }
     },
     checkLogin() {
       this.isLoggedIn = localStorage.getItem("token") !== null;
       this.type = localStorage.getItem("user");
+    }
+  },
+  computed :{
+    orderCount(){
+
+      //console.log(this.orders);
+
+      let count = 0;
+
+      this.orders.forEach( ord => {
+        ord.items.forEach(it => {
+          count += it.amount;
+        })
+      });
+      return count;
     }
   },
   created(){

@@ -16,7 +16,7 @@
         <label for="foodName">價錢</label>
         <input v-model="food.price" type="number" class="form-control" id="foodName" value="50" />
       </div>
-       <b-button variant="primary" v-if="!changePicture" @click="changePicture=true">修改食物圖片</b-button>
+       <b-button variant="primary" v-if="!changePicture" @click="changePicture=true"><font-awesome-icon icon="image"></font-awesome-icon>修改食物圖片</b-button>
       
       <div v-if="changePicture" class="form-group">
         <label for="foodPhoto">食物照片</label>
@@ -31,7 +31,7 @@
         class="btn btn-lg btn-primary btn-block"
         type="submit"
         @click.prevent="startEditFood"
-      >修改食物</button>
+      ><font-awesome-icon icon="edit"></font-awesome-icon>修改食物</button>
     </form>
   </div>
 </template>

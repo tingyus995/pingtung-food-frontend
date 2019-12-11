@@ -19,6 +19,7 @@ import ShopSignup from "../views/ShopSignup.vue";
 import ShopLogin from "../views/ShopLogin.vue"
 import EditFood from "../views/EditFood.vue"
 import MyFoods from "../views/MyFoods.vue"
+import ShopProfile from "../views/ShopProfile.vue";
 
 
 // bootstrap
@@ -115,6 +116,11 @@ const routes = [
     path : "/shop/myfoods",
     name : "myfoods",
     component: MyFoods
+  },
+  {
+    path : "/shop/profile",
+    name : "shopprofile",
+    component: ShopProfile
   },
   {
     path: "/shop/login",

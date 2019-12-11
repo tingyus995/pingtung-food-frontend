@@ -1,5 +1,5 @@
 <template>
-  <div class="add-food container-fluid">
+  <div class="add-food container container-fluid">
     <div class="card" v-for="(order, index) in orders" :key="index">
       <div class="card-header">
         <font-awesome-icon icon="user"></font-awesome-icon>

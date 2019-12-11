@@ -1,10 +1,24 @@
 <template>
   <div class="add-food container-fluid">
-    <h1>{{ user.name}}</h1>
+    <div class="form-group">
+      <label for="shopName">店家名稱</label>
+      <input v-model="shop.name" type="text" class="form-control" id="shopName" value="50" />
+    </div>
+
+    <div class="form-group">
+      <label for="shopEmail">店家E-mail</label>
+      <input v-model="shop.email" type="email" class="form-control" id="shopEmail" value="50" />
+    </div>
+    <button
+      class="btn btn-lg btn-primary btn-block"
+      type="submit"
+      @click.prevent="startEditProfile"
+    >
+      <font-awesome-icon icon="edit"></font-awesome-icon>儲存資訊
+    </button>
     <p>訂餐次數：15</p>
     <p>點餐未領取次數：0</p>
 
-    <b-button variant="primary">檢視我買過的餐點</b-button>
     <div>
       <b-button v-b-toggle.collapse-1 variant="primary">變更密碼</b-button>
       <b-collapse id="collapse-1" class="mt-2">
@@ -51,7 +65,23 @@
 import VueTagsInput from "@johmun/vue-tags-input";
 export default {
   name: "foods",
-  components: {},
+  components: {
+    VueTagsInput
+  },
+  data() {
+    return {
+      shop: {
+        name: "",
+        email: ""
+      },
+      pass: {
+        msg: "",
+        original: "",
+        newPassword: "",
+        confirmPassword: ""
+      }
+    };
+  },
   methods: {
     showSuccessMsg(msg) {
       this.$bvModal
@@ -88,7 +118,7 @@ export default {
 
       this.$http
         .put(
-          "/student/changepasswd",
+          "/shop/changepasswd",
           {
             original_password: pass.original,
             password: pass.newPassword
@@ -105,10 +135,33 @@ export default {
           console.log(error.response.data);
           console.log(JSON.stringify(error.response.data));
           //self.errorMsg = "帳號或密碼錯誤";
-          pass.msg = "舊密碼錯誤";
+          pass.msg = '舊密碼錯誤'
+        });
+    },
+    startEditProfile() {
+      let self = this;
+      let token = localStorage.getItem("token");
+      let config = {
+        headers: { Authorization: "bearer " + token }
+      };
+
+      this.$http
+        .put("/shop", this.shop, config)
+        .then(function(response) {
+          console.log(response);
+          //self.$emit('signupComplete', response.data);
+          //self.$router.push({ name: "foods" });
+          self.showSuccessMsg("儲存成功");
+        })
+        .catch(function(error) {
+          console.log(error.response.data);
+          console.log(JSON.stringify(error.response.data));
+          
+          //self.errorMsg = "帳號或密碼錯誤";
         });
     }
   },
+
   created() {
     let self = this;
     let token = localStorage.getItem("token");
@@ -117,31 +170,18 @@ export default {
     };
 
     this.$http
-      .get("/student", config)
+      .get("/shop", config)
       .then(function(response) {
         console.log(response);
         if (response.data) {
-          self.user = response.data;
-          //console.log(self.shop.name);
+          self.shop = response.data;
+
+          console.log(self.shop.name);
         }
       })
       .catch(function(error) {
-        //console.log(error.response.data);
+        console.log(error.response.data);
       });
-  },
-  data() {
-    return {
-      user: {
-        name: "",
-        email: ""
-      },
-      pass: {
-        msg: "",
-        original: "",
-        newPassword: "",
-        confirmPassword: ""
-      }
-    };
   }
 };
 </script>
