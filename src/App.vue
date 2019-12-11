@@ -181,6 +181,7 @@ export default {
 </script>
 <style lang="scss">
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
 #app {
   font-family: "微軟正黑體", "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

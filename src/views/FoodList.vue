@@ -1,8 +1,8 @@
 <template>
   <div class="food-list container-fluid">
     <h1>foods</h1>
-
-    <div class="card mb-4 shadow-sm" v-for="(item,index) in foods" :key="index">
+    <vue-bootstrap-typeahead v-model="query" :minMatchingChars="1" :data="keywords" placeholder="搜尋標籤、店家、食物名稱..." />
+    <div class="card mb-4 shadow-sm" v-for="(item,index) in searchResult" :key="index">
       <div class="food-img">
         <img class="bd-placeholder-img card-img-top" alt="Vue logo" :src="item.picture" />
       </div>
@@ -38,8 +38,7 @@
               class="btn btn-sm btn-warning"
               @click="addToFavorite(item)"
             >
-              <font-awesome-icon icon="heart"></font-awesome-icon>
-加到最愛
+              <font-awesome-icon icon="heart"></font-awesome-icon>加到最愛
             </button>
           </div>
           <small class="text-muted">
@@ -53,15 +52,23 @@
 
 <script>
 import VueJwtDecode from "vue-jwt-decode";
+import VueBootstrapTypeahead from "vue-bootstrap-typeahead";
+
 export default {
   name: "foods",
   data() {
     return {
       foods: [],
-      user: null
+      user: null,
+      query: "",
+      keywords : []
     };
   },
+  components: {
+    VueBootstrapTypeahead
+  },
   methods: {
+    
     addToCart(item) {
       this.$emit("cart_add", item);
     },
@@ -98,7 +105,7 @@ export default {
     },
 
     removeFromFavorite(item) {
- let self = this;
+      let self = this;
       console.log("remove favorite clicked");
       console.log(item._id);
 
@@ -122,17 +129,32 @@ export default {
           if (response.data) {
             console.log(response.data);
             console.log("removing....");
-            item.likes.splice( item.likes.indexOf(self.user._id),1);
+            item.likes.splice(item.likes.indexOf(self.user._id), 1);
             console.log(self.foods);
           }
         })
         .catch(function(error) {
           //console.log(error.response.data);
         });
-
     },
     hasLiked(item) {
       return item.likes.indexOf(this.user._id) !== -1;
+    },
+    addToKeyword(kw){
+          if(this.keywords.indexOf(kw) === -1){
+            this.keywords.push(kw);
+          }
+     }
+  },
+  computed: {
+    searchResult(){
+      let kw = this.query;
+      return this.foods.filter(food => {
+        if(food.name.indexOf(kw) !== -1) return true;
+        //console.log(food.tags);
+        if(food.tags.join(' ').indexOf(kw) !== -1) return true;
+        return false;
+      })
     }
   },
   created() {
@@ -148,9 +170,23 @@ export default {
     this.$http
       .get("/food", this.food, config)
       .then(function(response) {
+
         console.log(response);
         if (response.data) {
           self.foods = response.data;
+          self.keywords = []
+          self.foods.forEach(food => {
+            self.addToKeyword(food.name)
+            self.addToKeyword(food.shop)
+            food.tags.forEach(tag => {
+              self.addToKeyword(tag);
+            })
+          })
+
+          console.log("keywords");
+          console.log(self.keywords);
+
+
         }
       })
       .catch(function(error) {
