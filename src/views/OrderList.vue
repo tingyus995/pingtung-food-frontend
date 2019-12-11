@@ -1,6 +1,6 @@
 <template>
   <div class="add-food container container-fluid">
-    <div class="card" v-for="(order, index) in shopOrders.slice().reverse()" :key="index">
+    <div class="card mb-4" v-for="(order, index) in shopOrders.slice().reverse()" :key="index">
       <div class="card-header">
         <div class="status">
           <b-badge :variant="getVariant(order)" class="float-left">{{ getStatus(order) }}</b-badge>
@@ -23,6 +23,7 @@
       <div class="card-footer">
         <font-awesome-icon icon="coins"></font-awesome-icon>
         共{{ totalPrice(order) }}元
+        <div class="float-right">{{ getTime(order.createdAt) }}</div>
       </div>
       <div class="btn-group">
         <button
@@ -115,6 +116,11 @@ export default {
     */
   },
   methods: {
+    getTime(time){
+      //console.log("getting from now");
+      this.tick--;
+      return this.$moment(time).format('llll');
+    },
     getStatus(order) {
       if (order.status == "created") {
         return "訂單成立";

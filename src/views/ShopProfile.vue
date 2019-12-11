@@ -1,5 +1,14 @@
 <template>
   <div class="add-food container-fluid">
+    <h1>{{ shop.name }}</h1>
+    <p>總食物數量：{{ totalFoodCount }}</p>
+    <p>總訂單數量：{{ totalOrderCount }}</p>
+    <p>總營業額：{{ totalIncome }}</p>
+
+
+    <b-button v-b-toggle.shop-info variant="primary">變更店家資訊</b-button>
+    <b-collapse id="shop-info">
+    
     <div class="form-group">
       <label for="shopName">店家名稱</label>
       <input v-model="shop.name" type="text" class="form-control" id="shopName" value="50" />
@@ -16,8 +25,8 @@
     >
       <font-awesome-icon icon="edit"></font-awesome-icon>儲存資訊
     </button>
-    <p>訂餐次數：15</p>
-    <p>點餐未領取次數：0</p>
+    </b-collapse>
+
 
     <div>
       <b-button v-b-toggle.collapse-1 variant="primary">變更密碼</b-button>
@@ -64,7 +73,10 @@
 <script>
 import VueTagsInput from "@johmun/vue-tags-input";
 export default {
-  name: "foods",
+  name: "shopprofile",
+  props : [
+    'shopOrders'
+  ],
   components: {
     VueTagsInput
   },
@@ -79,9 +91,11 @@ export default {
         original: "",
         newPassword: "",
         confirmPassword: ""
-      }
+      },
+      foods : []
     };
   },
+ 
   methods: {
     showSuccessMsg(msg) {
       this.$bvModal
@@ -162,6 +176,26 @@ export default {
     }
   },
 
+  computed:  {
+    totalOrderCount(){
+      return this.shopOrders.length;
+    },
+    totalFoodCount(){
+      console.log("FOOD");
+      console.log(this.foods);
+      return this.foods.length;
+    },
+    totalIncome(){
+      let result = 0;
+      this.shopOrders.forEach(ord => {
+        ord.items.forEach(item => {
+          result += item.price * item.amount;
+        })
+      })
+      return result;
+    }
+  },
+
   created() {
     let self = this;
     let token = localStorage.getItem("token");
@@ -175,6 +209,20 @@ export default {
         console.log(response);
         if (response.data) {
           self.shop = response.data;
+
+          console.log(self.shop.name);
+        }
+      })
+      .catch(function(error) {
+        console.log(error.response.data);
+      });
+      
+    this.$http
+      .get("/food/shop", config)
+      .then(function(response) {
+        console.log(response);
+        if (response.data) {
+          self.foods = response.data;
 
           console.log(self.shop.name);
         }

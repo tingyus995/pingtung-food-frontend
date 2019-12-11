@@ -8,9 +8,10 @@ import FoodList from "../views/FoodList.vue";
 import AddFood from "../views/AddFood.vue";
 import Signup from "../views/Signup.vue";
 import Cart from "../views/Cart.vue";
-import Favorite from "../views/Favorite.vue";
+import Favorites from "../views/Favorites.vue";
 import Profile from "../views/Profile.vue";
 import OrderHistory from "../views/OrderHistory.vue";
+
 
 // shop
 
@@ -69,9 +70,9 @@ const routes = [
     component: Cart
   },
   {
-    path: "/favorite",
-    name: "favorite",
-    component: Favorite
+    path: "/favorites",
+    name: "favorites",
+    component: Favorites
   },
   {
     path: "/profile",

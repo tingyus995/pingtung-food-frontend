@@ -1,10 +1,10 @@
 <template>
   <div class="add-food container-fluid">
     <h1>{{ user.name}}</h1>
-    <p>訂餐次數：15</p>
-    <p>點餐未領取次數：0</p>
+    <p>訂餐次數：{{ orders.length }}</p>
+    
 
-    <b-button variant="primary">檢視我買過的餐點</b-button>
+    
     <div>
       <b-button v-b-toggle.collapse-1 variant="primary">變更密碼</b-button>
       <b-collapse id="collapse-1" class="mt-2">
@@ -52,6 +52,7 @@ import VueTagsInput from "@johmun/vue-tags-input";
 export default {
   name: "foods",
   components: {},
+
   methods: {
     showSuccessMsg(msg) {
       this.$bvModal
@@ -128,6 +129,20 @@ export default {
       .catch(function(error) {
         //console.log(error.response.data);
       });
+
+      
+    this.$http
+      .get("/order", config)
+      .then(function(response) {
+        console.log(response);
+        if (response.data) {
+          self.orders = response.data;
+          //console.log(self.shop.name);
+        }
+      })
+      .catch(function(error) {
+        //console.log(error.response.data);
+      });
   },
   data() {
     return {
@@ -140,7 +155,8 @@ export default {
         original: "",
         newPassword: "",
         confirmPassword: ""
-      }
+      },
+      orders : []
     };
   }
 };

@@ -16,6 +16,10 @@
         <label for="foodName">價錢</label>
         <input v-model="food.price" type="number" class="form-control" id="foodName" value="50" />
       </div>
+      <div class="form-group">
+        <label for="foodDesc">食物的敘述</label>
+        <input v-model="food.description" type="textarea" class="form-control" id="foodDesc" value="50" placeholder="稍微描述您的食物（選填）" />
+      </div>
        <b-button variant="primary" v-if="!changePicture" @click="changePicture=true"><font-awesome-icon icon="image"></font-awesome-icon>修改食物圖片</b-button>
       
       <div v-if="changePicture" class="form-group">
@@ -52,7 +56,8 @@ export default {
         name: "",
         price: "",
         tags: [],
-        picture : ""
+        picture : "",
+        description: ""
       },
       
       tag: "",

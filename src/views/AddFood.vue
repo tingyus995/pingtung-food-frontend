@@ -16,7 +16,10 @@
         <label for="foodName">價錢</label>
         <input v-model="food.price" type="number" class="form-control" id="foodName" value="50" />
       </div>
-
+      <div class="form-group">
+        <label for="foodDesc">食物的敘述</label>
+        <input v-model="food.description" type="textarea" class="form-control" id="foodDesc" value="50" placeholder="稍微描述您的食物（選填）" />
+      </div>
       <div class="form-group">
         <label for="foodPhoto">食物照片</label>
         <input type="file" class="form-control-file" id="foodPhoto" v-on:change="handleFileUpload($event)"/>
@@ -48,7 +51,8 @@ export default {
         name: "",
         price: "",
         tags: [],
-        picture : ""
+        picture : "",
+        description: ""
       },
       tags: [],
       tag: ""

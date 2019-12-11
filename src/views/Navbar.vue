@@ -11,6 +11,9 @@
         <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'foods' }">食物列表</router-link>
       </b-nav-item>
       <b-nav-item>
+        <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'favorites' }">我的最愛</router-link>
+      </b-nav-item>
+      <b-nav-item>
         <router-link v-if="isLoggedIn && type== 'student'" :to="{ name: 'cart' }">購買清單 <b-badge v-if="orderCount > 0" variant="info">{{orderCount }}</b-badge></router-link>
       </b-nav-item>
       <b-nav-item>

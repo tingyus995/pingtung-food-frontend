@@ -5,7 +5,8 @@ import router from "./router";
 import axios from "axios";
 import VueSocketIO from 'vue-socket.io'
 import eventBus from "./eventBus";
-
+import moment from "moment";
+import VueMomentJS from "vue-momentjs";
 
 
 axios.defaults.timeout = 5000;
@@ -36,6 +37,9 @@ Vue.use(new VueSocketIO({
   //options: { path: "/my-app/" } //Optional options
 }))
 
+moment.locale('zh_TW'); // set language of moment
+
+Vue.use(VueMomentJS, moment);
 
 
 Vue.config.productionTip = false;

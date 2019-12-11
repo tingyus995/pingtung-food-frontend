@@ -1,7 +1,8 @@
 <template>
   <div class="add-food container-fluid">
      <b-alert v-if="!orders.length" show variant="info">清單內沒有食物喔！</b-alert>
-    <div class="card" v-for="(order,index) in orders" :key="index">
+     <router-link class="btn btn-primary" v-if="!orders.length" :to="{ name: 'orderhistory' }" >前往查看您的訂單吧</router-link>
+    <div class="card mb-4" v-for="(order,index) in orders" :key="index">
       <div class="card-header">
         <font-awesome-icon icon="store-alt"></font-awesome-icon>
         {{ order.shop}}

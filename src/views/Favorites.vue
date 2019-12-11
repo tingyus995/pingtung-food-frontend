@@ -1,7 +1,7 @@
 <template>
   <div class="food-list container-fluid">
-    <h1>foods</h1>
-    <vue-bootstrap-typeahead class="mb-2" v-model="query" :minMatchingChars="1" :data="keywords" placeholder="搜尋標籤、店家、食物名稱..." />
+    <h1>favorites</h1>
+    
     <div class="card mb-4 shadow-sm" v-for="(item,index) in searchResult" :key="index">
       <div class="food-img">
         <img class="bd-placeholder-img card-img-top" alt="Vue logo" :src="item.picture" />
@@ -60,8 +60,8 @@ export default {
     return {
       foods: [],
       user: null,
-      query: "",
-      keywords : []
+      
+      
     };
   },
   components: {
@@ -148,12 +148,9 @@ export default {
   },
   computed: {
     searchResult(){
-      let kw = this.query;
-      return this.foods.filter(food => {
-        if(food.name.indexOf(kw) !== -1) return true;
-        //console.log(food.tags);
-        if(food.tags.join(' ').indexOf(kw) !== -1) return true;
-        return false;
+      let self = this;
+      return this.foods.filter(food => {        
+        return food.likes.indexOf(self.user._id) !== -1
       })
     }
   },
