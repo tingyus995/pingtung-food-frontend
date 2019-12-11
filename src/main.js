@@ -6,6 +6,8 @@ import axios from "axios";
 import VueSocketIO from 'vue-socket.io'
 import eventBus from "./eventBus";
 
+
+
 axios.defaults.timeout = 5000;
 axios.defaults.baseURL = "http://localhost:3030"
 Vue.prototype.$http = axios;
