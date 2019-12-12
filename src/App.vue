@@ -1,17 +1,20 @@
 <template>
   <div id="app">
-    <Navbar :orders="orders" :notifications="notifications"/>
-    
-    <b-alert v-for="(no,index) in notifications" :key="index" show="true" :variant="no.varient" @dismissed="deleteNotification(index)"  dismissible>
-      {{ no.message }}
-    </b-alert>
+    <Navbar :orders="orders" :notifications="notifications" />
 
+    <b-alert
+      v-for="(no,index) in notifications"
+      :key="index"
+      show="true"
+      :variant="no.varient"
+      @dismissed="deleteNotification(index)"
+      dismissible
+    >{{ no.message }}</b-alert>
 
     <transition name="slide-fade">
       <router-view
         :orders="orders"
         :shopOrders="shopOrders"
-        
         @cart_add="addToCart"
         @cart_remove="removeFromCart"
         @remove_order="removeOrder"
@@ -27,7 +30,7 @@ export default {
     return {
       orders: [], // for student
       shopOrders: [], // for shop
-      notifications : [],
+      notifications: [],
       showDismissibleAlert: true
     };
   },
@@ -37,7 +40,16 @@ export default {
   sockets: {
     connect() {
       console.log("socket connected.");
-      this.$socket.emit("auth", localStorage.getItem("token"));
+
+      if (localStorage.getItem("token")) {
+        // logged in => auth now
+        this.$socket.emit("auth", localStorage.getItem("token"));
+      } else {
+        // not logged in => wait until login
+        this.$bus.$on("logged", () => {
+          this.$socket.emit("auth", localStorage.getItem("token"));
+        });
+      }
     }
   },
   beforeMount() {
@@ -45,7 +57,8 @@ export default {
     /*this.sockets.subscribe('hello', data => {
       console.log(data);
     })*/
-    this.sockets.subscribe("new_order", data => { // for shop
+    this.sockets.subscribe("new_order", data => {
+      // for shop
       console.log("new_order");
       //console.log(data);
       console.log(data);
@@ -53,33 +66,36 @@ export default {
       console.log(this.shopOrders);
     });
 
-    this.sockets.subscribe("order_change", data => { // for student
+    this.sockets.subscribe("order_change", data => {
+      // for student
       console.log("order_ready");
       //console.log(data);
       console.log(data);
-      //this.shopOrders.unshift(data);      
+      //this.shopOrders.unshift(data);
       //console.log(this.shopOrders);
-      let verb = ''
-      let varient = 'info'
-      if(data.status === 'rejected'){
-        verb = '被拒絕'
-        varient = 'danger';
-      }else if (data.status === 'finished'){
-        verb = '已完成'
-      } else if (data.status === 'notified'){
-        verb = '可以去拿'
+      let verb = "";
+      let varient = "info";
+      if (data.status === "rejected") {
+        verb = "被拒絕";
+        varient = "danger";
+      } else if (data.status === "finished") {
+        verb = "已完成";
+      } else if (data.status === "notified") {
+        verb = "可以去拿";
       }
 
-      this.notifications.push({varient ,message :  '一個訂單已經' + verb + '囉！'});
-
-
+      this.notifications.push({
+        varient,
+        message: "一個訂單已經" + verb + "囉！"
+      });
     });
   },
   methods: {
-    deleteNotification(index){
-      this.notifications.splice(index,1)
+    deleteNotification(index) {
+      this.notifications.splice(index, 1);
     },
-    addToCart(item) { // for students
+    addToCart(item) {
+      // for students
       let found = false;
 
       this.orders.forEach(ord => {
@@ -128,7 +144,8 @@ export default {
 
       console.log(this.orders);
     },
-    removeFromCart(item) { // for students
+    removeFromCart(item) {
+      // for students
       this.orders.map(ord => {
         ord.items.map(it => {
           if (it._id === item._id) {
@@ -155,27 +172,41 @@ export default {
     }
   },
   created() {
-    if (localStorage.getItem("user") === "shop") { // for shops
-      // get all orders
-      let self = this;
-      let token = localStorage.getItem("token");
-      let config = {
-        headers: { Authorization: "bearer " + token }
-      };
+    let self = this;
+    console.log("debugggg");
+    //this.getAllOrders();
+    console.log("after getting orders");
+    function getAllOrders() {
+      console.log("getting all orders");
+      if (localStorage.getItem("user") === "shop") {
+        // for shops
+        // get all orders
+        //let self = this;
+        let token = localStorage.getItem("token");
+        let config = {
+          headers: { Authorization: "bearer " + token }
+        };
 
-      this.$http
-        .get("/order/shop", config)
-        .then(function(response) {
-          console.log(response);
-          self.shopOrders = response.data;
-          //self.$emit('signupComplete', response.data);
+        self.$http
+          .get("/order/shop", config)
+          .then(function(response) {
+            console.log(response);
+            self.shopOrders = response.data;
+            //self.$emit('signupComplete', response.data);
 
-          //self.$router.push({ name: "addfood" });
-        })
-        .catch(function(error) {
-          //console.log(JSON.stringify(error.response.data));
-        });
+            //self.$router.push({ name: "addfood" });
+          })
+          .catch(function(error) {
+            //console.log(JSON.stringify(error.response.data));
+          });
+      }
     }
+    getAllOrders();
+
+    this.$bus.$on('logged', () => {
+      getAllOrders();
+    })
+    
   }
 };
 </script>

@@ -1,11 +1,14 @@
 <template>
   <div class="food-list container-fluid">
     <h1>foods</h1>
-    <vue-bootstrap-typeahead class="mb-2" v-model="query" :minMatchingChars="1" :data="keywords" placeholder="搜尋標籤、店家、食物名稱..." />
-    <div class="card mb-4 shadow-sm" v-for="(item,index) in searchResult" :key="index">
-      <div class="food-img">
-        <img class="bd-placeholder-img card-img-top" alt="Vue logo" :src="item.picture" />
-      </div>
+    <vue-bootstrap-typeahead
+      class="mb-2"
+      v-model="query"
+      :minMatchingChars="1"
+      :data="keywords"
+      placeholder="搜尋標籤、店家、食物名稱..."
+    />
+    <b-card class="shadow-sm" v-for="(item,index) in searchResult" :key="index" :img-src="item.picture">      
       <div class="food-card card-body">
         <h5 class="card-title">{{ item.name }}</h5>
         <h6>
@@ -46,7 +49,7 @@
           </small>
         </div>
       </div>
-    </div>
+    </b-card>
   </div>
 </template>
 
@@ -61,14 +64,13 @@ export default {
       foods: [],
       user: null,
       query: "",
-      keywords : []
+      keywords: []
     };
   },
   components: {
     VueBootstrapTypeahead
   },
   methods: {
-    
     addToCart(item) {
       this.$emit("cart_add", item);
     },
@@ -140,21 +142,21 @@ export default {
     hasLiked(item) {
       return item.likes.indexOf(this.user._id) !== -1;
     },
-    addToKeyword(kw){
-          if(this.keywords.indexOf(kw) === -1){
-            this.keywords.push(kw);
-          }
-     }
+    addToKeyword(kw) {
+      if (this.keywords.indexOf(kw) === -1) {
+        this.keywords.push(kw);
+      }
+    }
   },
   computed: {
-    searchResult(){
+    searchResult() {
       let kw = this.query;
       return this.foods.filter(food => {
-        if(food.name.indexOf(kw) !== -1) return true;
+        if (food.name.indexOf(kw) !== -1) return true;
         //console.log(food.tags);
-        if(food.tags.join(' ').indexOf(kw) !== -1) return true;
+        if (food.tags.join(" ").indexOf(kw) !== -1) return true;
         return false;
-      })
+      });
     }
   },
   created() {
@@ -170,23 +172,20 @@ export default {
     this.$http
       .get("/food", this.food, config)
       .then(function(response) {
-
         console.log(response);
         if (response.data) {
           self.foods = response.data;
-          self.keywords = []
+          self.keywords = [];
           self.foods.forEach(food => {
-            self.addToKeyword(food.name)
-            self.addToKeyword(food.shop)
+            self.addToKeyword(food.name);
+            self.addToKeyword(food.shop);
             food.tags.forEach(tag => {
               self.addToKeyword(tag);
-            })
-          })
+            });
+          });
 
           console.log("keywords");
           console.log(self.keywords);
-
-
         }
       })
       .catch(function(error) {
