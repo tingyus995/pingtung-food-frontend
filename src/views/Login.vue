@@ -57,7 +57,9 @@ export default {
           localStorage.setItem('token', response.data.token);
           localStorage.setItem('user', response.data.user.type);
           self.$bus.$emit('logged', 'User logged in.')
-          self.$router.push({name : 'foods'})
+          if(response.data.user.type === 'student'){
+            self.$router.push({name : 'foods'})
+          }
         })
         .catch(function(error) {
           console.log(error.response.data);

@@ -7,7 +7,7 @@ import VueSocketIO from 'vue-socket.io'
 import eventBus from "./eventBus";
 import moment from "moment";
 import VueMomentJS from "vue-momentjs";
-
+import VueLodash from 'vue-lodash';
 
 axios.defaults.timeout = 5000;
 axios.defaults.baseURL = "http://localhost:3030"
@@ -40,7 +40,7 @@ Vue.use(new VueSocketIO({
 moment.locale('zh_TW'); // set language of moment
 
 Vue.use(VueMomentJS, moment);
-
+Vue.use(VueLodash);
 
 Vue.config.productionTip = false;
 

@@ -1,107 +1,46 @@
 <template>
-  <div class="food-list container-fluid">
-    <h1>favorites</h1>
-    
-    <div class="card mb-4 shadow-sm" v-for="(item,index) in searchResult" :key="index">
-      <div class="food-img">
-        <img class="bd-placeholder-img card-img-top" alt="Vue logo" :src="item.picture" />
-      </div>
-      <div class="food-card card-body">
-        <h5 class="card-title">{{ item.name }}</h5>
-        <h6>
-          <font-awesome-icon icon="store-alt"></font-awesome-icon>
-          {{ item.shop }}
-        </h6>
-        <p class="tags card-text text-left">
-          <span class="badge badge-success" v-for="(tag,index) in item.tags" :key="index">{{ tag }}</span>
-        </p>
-        <p class="card-text text-left">{{ item.description }}</p>
+  <FoodCardList :foods="likedFoods" message-prefix="在我的最愛中" v-slot="props">
+    <button type="button" class="btn btn-sm btn-primary" @click="addToCart(props.item)">
+      <font-awesome-icon icon="cart-plus"></font-awesome-icon>加入購買清單
+    </button>
+    <button
+      v-if="hasLiked(props.item)"
+      type="button"
+      class="btn btn-sm btn-warning"
+      @click="removeFromFavorite(props.item)"
+    >
+      <font-awesome-icon icon="heart-broken"></font-awesome-icon>移除最愛
+    </button>
 
-        <div class="d-flex justify-content-between align-items-center">
-          <span class="price">$ {{ item.price }}</span>
-          <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-primary" @click="addToCart(item)">
-              <font-awesome-icon icon="cart-plus"></font-awesome-icon>加入購買清單
-            </button>
-            <button
-              v-if="hasLiked(item)"
-              type="button"
-              class="btn btn-sm btn-warning"
-              @click="removeFromFavorite(item)"
-            >
-              <font-awesome-icon icon="heart-broken"></font-awesome-icon>移除最愛
-            </button>
-
-            <button
-              v-if="!hasLiked(item)"
-              type="button"
-              class="btn btn-sm btn-warning"
-              @click="addToFavorite(item)"
-            >
-              <font-awesome-icon icon="heart"></font-awesome-icon>加到最愛
-            </button>
-          </div>
-          <small class="text-muted">
-            <font-awesome-icon icon="walking"></font-awesome-icon>步行7分鐘
-          </small>
-        </div>
-      </div>
-    </div>
-  </div>
+    <button
+      v-if="!hasLiked(props.item)"
+      type="button"
+      class="btn btn-sm btn-warning"
+      @click="addToFavorite(props.item)"
+    >
+      <font-awesome-icon icon="heart"></font-awesome-icon>加到最愛
+    </button>
+  </FoodCardList>
 </template>
 
 <script>
 import VueJwtDecode from "vue-jwt-decode";
-import VueBootstrapTypeahead from "vue-bootstrap-typeahead";
+import FoodCardList from "../components/FoodCardList";
 
 export default {
   name: "foods",
   data() {
     return {
       foods: [],
-      user: null,
-      
-      
+      user: null
     };
   },
   components: {
-    VueBootstrapTypeahead
+    FoodCardList
   },
   methods: {
-    
     addToCart(item) {
       this.$emit("cart_add", item);
-    },
-    addToFavorite(item) {
-      let self = this;
-      console.log("add favorite clicked");
-      console.log(item._id);
-
-      //let self = this;
-      let token = localStorage.getItem("token");
-      let config = {
-        headers: { Authorization: "bearer " + token }
-      };
-
-      this.$http
-        .put(
-          "/food/favorite",
-          {
-            action: "like",
-            _id: item._id
-          },
-          config
-        )
-        .then(function(response) {
-          console.log(response);
-          if (response.data) {
-            console.log(response.data);
-            item.likes.push(self.user._id);
-          }
-        })
-        .catch(function(error) {
-          //console.log(error.response.data);
-        });
     },
 
     removeFromFavorite(item) {
@@ -139,19 +78,14 @@ export default {
     },
     hasLiked(item) {
       return item.likes.indexOf(this.user._id) !== -1;
-    },
-    addToKeyword(kw){
-          if(this.keywords.indexOf(kw) === -1){
-            this.keywords.push(kw);
-          }
-     }
+    }
   },
   computed: {
-    searchResult(){
+    likedFoods() {
       let self = this;
-      return this.foods.filter(food => {        
-        return food.likes.indexOf(self.user._id) !== -1
-      })
+      return this.foods.filter(food => {
+        return food.likes.indexOf(self.user._id) !== -1;
+      });
     }
   },
   created() {
@@ -167,23 +101,9 @@ export default {
     this.$http
       .get("/food", this.food, config)
       .then(function(response) {
-
         console.log(response);
         if (response.data) {
           self.foods = response.data;
-          self.keywords = []
-          self.foods.forEach(food => {
-            self.addToKeyword(food.name)
-            self.addToKeyword(food.shop)
-            food.tags.forEach(tag => {
-              self.addToKeyword(tag);
-            })
-          })
-
-          console.log("keywords");
-          console.log(self.keywords);
-
-
         }
       })
       .catch(function(error) {
@@ -195,18 +115,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
-.food-img {
-  max-height: 200px;
-  overflow: hidden;
-}
-.food-list .price {
-  font-weight: bold;
-}
-.tags span {
-  margin: 0 5px;
-  font-size: 0.8rem;
-}
-.food-card h6 {
-  color: rgb(109, 109, 109);
-}
 </style>

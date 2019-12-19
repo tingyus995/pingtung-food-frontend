@@ -13,6 +13,7 @@
 
     <transition name="slide-fade">
       <router-view
+        class="app-view"
         :orders="orders"
         :shopOrders="shopOrders"
         @cart_add="addToCart"
@@ -229,6 +230,9 @@ export default {
 /* .slide-fade-leave-active for below version 2.1.8 */ {
   transform: translateX(10px);
   opacity: 0;
+}
+.app-view{
+  margin-top:70px;
 }
 </style>
 
