@@ -121,7 +121,11 @@ export default {
 </script>
 <style lang="scss">
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-
+.router-link-exact-active{
+  font-weight: bold;  
+  background:#ddd;
+  border-radius: 5px;
+}
 /*#nav {
   padding: 30px;
 
