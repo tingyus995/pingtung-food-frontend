@@ -98,9 +98,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
-.food-list {
-  max-width: 1200px;
-}
+
 .food-img {
   max-height: 200px;
   overflow: hidden;

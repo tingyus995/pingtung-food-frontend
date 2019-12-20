@@ -231,8 +231,11 @@ export default {
   transform: translateX(10px);
   opacity: 0;
 }
+
 .app-view{
+  margin:0 auto;
   margin-top:70px;
+  max-width: 1200px;  
 }
 </style>
 

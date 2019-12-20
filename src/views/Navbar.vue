@@ -102,7 +102,7 @@ export default {
     },
 
     userName(){
-      if(!this.isLoggedIn) return 'abc';
+      if(!this.isLoggedIn) return '';
       let token = localStorage.getItem("token");
       let user = VueJwtDecode.decode(token);
       
