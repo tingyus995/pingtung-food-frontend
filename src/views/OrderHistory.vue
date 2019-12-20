@@ -1,44 +1,26 @@
 <template>
-  <div class="add-food container container-fluid">
-    <div class="card mb-4" v-for="(order,index) in orders.slice().reverse()" :key="index">
-      <div class="card-header">
-        <div class="status">
-          <b-badge :variant="getVariant(order)" class="float-left">{{ getStatus(order) }}</b-badge>
-        </div>
-        <font-awesome-icon icon="store-alt"></font-awesome-icon>
-        {{ order.shop}}
+  <OrderCardList :orders="orders.slice().reverse()" show-time="true">
+    <template v-slot:top="props">
+      <div class="status">
+        <b-badge :variant="getVariant(props.order)" class="float-left">{{ getStatus(props.order) }}</b-badge>
       </div>
-
-      <div class="card-body">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item text-center" v-if="!order.items.length">沒有訂單</li>
-
-          <li class="list-group-item text-left" v-for="item in order.items" :key="item.id">
-            {{ item.name}}
-            <span class="badge badge-success">{{ item.amount }}</span>
-            <div class="float-right right-price">
-              <div class="price">{{ item.amount }} x {{item.price }}</div>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <div class="card-footer">
-        <div class="float-right">{{ getTime(order.createdAt) }}</div>
-        <font-awesome-icon icon="coins"></font-awesome-icon>
-        共{{ totalPrice(order) }}元
-      </div>
-    </div>
-  </div>
+      <font-awesome-icon icon="store-alt"></font-awesome-icon>
+      {{ props.order.shop}}
+    </template>
+  </OrderCardList>
 </template>
 
 <script>
+import OrderCardList from "../components/OrderCardList";
 export default {
   name: "orderhistory",
-  components: {},
+  components: {
+    OrderCardList
+  },
   data() {
     return {
-      orders: [],
-      
+      orders: []
+
       /*orders: [
         {
           shop: "捲捲泰式料理",
@@ -65,7 +47,7 @@ export default {
   },
   created() {
     let self = this;
-    
+
     let token = localStorage.getItem("token");
     let config = {
       headers: { Authorization: "bearer " + token }
@@ -109,9 +91,9 @@ export default {
       } else if (order.status == "finished") {
         return "訂單完成";
       } else if (order.status == "notified") {
-        return "已通知取餐";
+        return "可取餐";
       } else if (order.status == "rejected") {
-        return "已拒絕訂單";
+        return "訂單被拒絕";
       }
     },
     getVariant(order) {
@@ -125,22 +107,8 @@ export default {
       } else if (order.status == "rejected") {
         return "danger";
       }
-    },
-    totalPrice(order) {
-      console.log(order);
-      let price = 0;
-
-      order.items.forEach(item => {
-        price += item.price * item.amount;
-      });
-
-      return price;
-    },
-    getTime(time){
-      //console.log("getting from now");
-      this.tick--;
-      return this.$moment(time).format('llll');
     }
+
   },
   computed: {}
 };
@@ -148,10 +116,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
-.right-price > * {
-  display: inline-block;
-}
-.right-price .price {
-  padding-right: 10px;
-}
+
 </style>

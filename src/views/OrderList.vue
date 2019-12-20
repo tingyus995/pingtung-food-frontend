@@ -1,64 +1,47 @@
 <template>
-  <div class="add-food container container-fluid">
-    <div class="card mb-4" v-for="(order, index) in shopOrders.slice().reverse()" :key="index">
-      <div class="card-header">
-        <div class="status">
-          <b-badge :variant="getVariant(order)" class="float-left">{{ getStatus(order) }}</b-badge>
-        </div>
+    <OrderCardList :orders="shopOrders.slice().reverse()" show-time="true">
+      <template v-slot:top="props">
+        <b-badge :variant="getVariant(props.order)" class="float-left">{{ getStatus(props.order) }}</b-badge>
         <font-awesome-icon icon="user"></font-awesome-icon>
-        {{ order.student.name }}
-      </div>
-
-      <div class="card-body">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item text-left" v-for="item in order.items" :key="item.id">
-            {{ item.name}}
-            <span class="badge badge-success">{{ item.amount }}</span>
-            <div class="float-right right-price">
-              <div class="price">{{ item.amount }} x {{item.price }}</div>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <div class="card-footer">
-        <font-awesome-icon icon="coins"></font-awesome-icon>
-        共{{ totalPrice(order) }}元
-        <div class="float-right">{{ getTime(order.createdAt) }}</div>
-      </div>
-      <div class="btn-group">
+        {{ props.order.student.name }}
+      </template>
+      <template v-slot:button="props">
         <button
-          :disabled="finishBtnDisable(order)"
+          :disabled="finishBtnDisable(props.order)"
           class="btn btn-primary"
-          @click.prevent="finish(order)"
+          @click.prevent="finish(props.order)"
         >
           <font-awesome-icon icon="check"></font-awesome-icon>
-          {{ order.finished ? "已完成" : "完成訂單"}}
+          {{ props.order.finished ? "已完成" : "完成訂單"}}
         </button>
         <button
-          :disabled="notifyBtnDisable(order)"
+          :disabled="notifyBtnDisable(props.order)"
           class="btn btn-info"
-          @click.prevent="notify(order)"
+          @click.prevent="notify(props.order)"
         >
           <font-awesome-icon icon="bell"></font-awesome-icon>
-          {{ order.status === 'notified' ? "已通知" : "通知領取"}}
+          {{ props.order.status === 'notified' ? "已通知" : "通知領取"}}
         </button>
         <b-button
-          :disabled="rejectBtnDisable(order)"
+          :disabled="rejectBtnDisable(props.order)"
           variant="danger"
-          @click="confirmReject(order)"
+          @click="confirmReject(props.order)"
         >
           <font-awesome-icon icon="user-slash"></font-awesome-icon>
-          {{ order.status ==='rejected' ? "訂單已拒絕" : "拒絕訂單" }}
+          {{ props.order.status ==='rejected' ? "訂單已拒絕" : "拒絕訂單" }}
         </b-button>
-      </div>
-    </div>
-  </div>
+      </template>
+    </OrderCardList>
+
 </template>
 
 <script>
+import OrderCardList from "../components/OrderCardList";
 export default {
   name: "orderlist",
-  components: {},
+  components: {
+    OrderCardList
+  },
   props: ["shopOrders"],
   data() {
     return {
@@ -116,20 +99,15 @@ export default {
     */
   },
   methods: {
-    getTime(time){
-      //console.log("getting from now");
-      this.tick--;
-      return this.$moment(time).format('llll');
-    },
     getStatus(order) {
       if (order.status == "created") {
         return "訂單成立";
       } else if (order.status == "finished") {
         return "訂單完成";
       } else if (order.status == "notified") {
-        return "可取餐";
+        return "已通知取餐";
       } else if (order.status == "rejected") {
-        return "訂單被拒絕";
+        return "已拒絕訂單";
       }
     },
     getVariant(order) {
@@ -143,16 +121,6 @@ export default {
       } else if (order.status == "rejected") {
         return "danger";
       }
-    },
-    totalPrice(order) {
-      console.log(order);
-      let price = 0;
-
-      order.items.forEach(item => {
-        price += item.price * item.amount;
-      });
-
-      return price;
     },
     sendOrderRequest(data) {
       let self = this;

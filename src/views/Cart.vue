@@ -1,50 +1,40 @@
 <template>
   <b-container fluid>
-     <b-alert v-if="!orders.length" show variant="info">清單內沒有食物喔！</b-alert>
-     <router-link class="btn btn-primary" v-if="!orders.length" :to="{ name: 'foods' }" >到食物列表發掘食物吧！</router-link>
-    <div class="card mb-4" v-for="(order,index) in orders" :key="index">
-      <div class="card-header">
+    <b-alert v-if="!orders.length" show variant="info">清單內沒有食物喔！</b-alert>
+    <router-link class="btn btn-primary" v-if="!orders.length" :to="{ name: 'foods' }">到食物列表發掘食物吧！</router-link>
+
+    <OrderCardList :orders="orders">
+      <template v-slot:top="props">
         <font-awesome-icon icon="store-alt"></font-awesome-icon>
-        {{ order.shop}}
-      </div>
+        {{ props.order.shop}}
+      </template>
 
-      <div class="card-body">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item text-center" v-if="!order.items.length">沒有訂單</li>
+      <template v-slot:item="props">
+        <button class="btn btn-danger" @click.prevent="deleteItem(props.item)">
+          <font-awesome-icon icon="trash-alt"></font-awesome-icon>
+        </button>
+      </template>
 
-          <li class="list-group-item text-left" v-for="item in order.items" :key="item.id">
-            {{ item.name}}
-            <span class="badge badge-success">{{ item.amount }}</span>
-            <div class="float-right right-price">
-              <div class="price">{{ item.amount }} x {{item.price }}</div>
-              <button class="btn btn-danger" @click.prevent="deleteItem(item)">
-                <font-awesome-icon icon="trash-alt"></font-awesome-icon>
-              </button>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <div class="card-footer">
-        <font-awesome-icon icon="coins"></font-awesome-icon>
-        共{{ totalPrice(order) }}元
-      </div>
-      <div class="btn-group">
+      <template v-slot:button="props">
         <button
-          :disabled="!order.items.length"
-          @click="placeTheOrder(order)"
+          :disabled="!props.order.items.length"
+          @click="placeTheOrder(props.order)"
           class="btn btn-primary"
         >
           <font-awesome-icon icon="money-check-alt"></font-awesome-icon>下訂單
         </button>
-      </div>
-    </div>
+      </template>
+    </OrderCardList>
   </b-container>
 </template>
 
 <script>
+import OrderCardList from "../components/OrderCardList"
 export default {
   name: "cart",
-  components: {},
+  components: {
+    OrderCardList
+  },
   props: ["orders"],
   data() {
     return {};
@@ -67,8 +57,6 @@ export default {
       let self = this;
       console.log("debug");
       if (order.items.length) {
-        
-
         let token = localStorage.getItem("token");
         let config = {
           headers: { Authorization: "bearer " + token }
@@ -79,8 +67,8 @@ export default {
           .then(function(response) {
             console.log(response);
             //self.$emit('signupComplete', response.data);
-            
-            self.$emit('remove_order', order);
+
+            self.$emit("remove_order", order);
             //self.$router.push({ name: "addfood" });
           })
           .catch(function(error) {
@@ -95,10 +83,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
-.right-price > * {
-  display: inline-block;
-}
-.right-price .price {
-  padding-right: 10px;
-}
 </style>
