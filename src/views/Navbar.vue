@@ -16,7 +16,7 @@
 
       <template v-if="isLoggedIn">
         <template v-if="type== 'student'">
-          <b-nav-item :to="{ name: 'foods' }">食物列表</b-nav-item>
+          <b-nav-item :to="{ name: 'foods' }">探索美食</b-nav-item>
           <b-nav-item :to="{ name: 'favorites' }">我的最愛</b-nav-item>
           <b-nav-item :to="{ name: 'cart' }">
             購買清單

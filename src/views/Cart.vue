@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <b-alert v-if="!orders.length" show variant="info">清單內沒有食物喔！</b-alert>
-    <router-link class="btn btn-primary" v-if="!orders.length" :to="{ name: 'foods' }">到食物列表發掘食物吧！</router-link>
+    <router-link class="btn btn-primary" v-if="!orders.length" :to="{ name: 'foods' }">前往探索美食找食物吃吧！</router-link>
 
     <OrderCardList :orders="orders">
       <template v-slot:top="props">
@@ -69,7 +69,7 @@ export default {
             //self.$emit('signupComplete', response.data);
 
             self.$emit("remove_order", order);
-            //self.$router.push({ name: "addfood" });
+            self.$router.push({ name: "orderhistory" });
           })
           .catch(function(error) {
             //console.log(JSON.stringify(error.response.data));

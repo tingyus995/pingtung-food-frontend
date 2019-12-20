@@ -13,101 +13,140 @@
         />
       </div>
       <div class="form-group">
-        <label for="foodName">價錢</label>
-        <input v-model="food.price" type="number" class="form-control" id="foodName" value="50" />
+        <label for="foodPrice">價錢</label>
+        <input v-model="food.price" type="number" class="form-control" id="foodPrice" />
       </div>
       <div class="form-group">
         <label for="foodDesc">食物的敘述</label>
-        <input v-model="food.description" type="textarea" class="form-control" id="foodDesc" value="50" placeholder="稍微描述您的食物（選填）" />
+        <input
+          v-model="food.description"
+          type="textarea"
+          class="form-control"
+          id="foodDesc"
+          value="50"
+          placeholder="用一句話描述您的食物（選填）"
+        />
       </div>
-       <b-button variant="primary" v-if="!changePicture" @click="changePicture=true"><font-awesome-icon icon="image"></font-awesome-icon>修改食物圖片</b-button>
-      
+      <b-button variant="primary" v-if="!changePicture" @click="changePicture=true">
+        <font-awesome-icon icon="image"></font-awesome-icon>修改食物圖片
+      </b-button>
+
       <div v-if="changePicture" class="form-group">
         <label for="foodPhoto">食物照片</label>
-        <input type="file" class="form-control-file" id="foodPhoto" v-on:change="handleFileUpload($event)"/>
+        <b-form-file
+          browse-text="瀏覽"
+          placeholder="選擇或拖曳檔案到這裡..."
+          drop-placeholder="拖曳檔案到這裡..."
+          id="foodPhoto"
+          v-on:change="handleFileUpload($event)"
+        ></b-form-file>
+      </div>
+      <div class="form-group">
+        <Cropper
+          class="cropper"
+          :src="fullPicture"
+          :stencil-props="{
+          aspectRatio: aspectRatio
+        }"
+          @change="cropperChange"
+        ></Cropper>
       </div>
 
       <div class="form-group">
-        <vue-tags-input v-model="tag" :tags="tags" @tags-changed="newTags => tags = newTags" />
+        <vue-tags-input  placeholder="新增標籤" v-model="tag" :tags="tags" @tags-changed="newTags => tags = newTags" />
       </div>
 
-      <button
-        class="btn btn-lg btn-primary btn-block"
-        type="submit"
-        @click.prevent="startEditFood"
-      ><font-awesome-icon icon="edit"></font-awesome-icon>修改食物</button>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" @click.prevent="startEditFood">
+        <font-awesome-icon icon="edit"></font-awesome-icon>修改食物
+      </button>
     </form>
   </div>
 </template>
 
 <script>
-
-import { VueTagsInput, createTag, createTags } from '@johmun/vue-tags-input';
+import { VueTagsInput, createTag, createTags } from "@johmun/vue-tags-input";
+import { Cropper } from 'vue-advanced-cropper';
 export default {
   name: "foods",
   components: {
-    VueTagsInput
+    VueTagsInput,
+    Cropper
   },
-  props : ['item'],
+  props: ["item"],
   data() {
     return {
-      changePicture : false,
+      changePicture: false,
       food: {
         name: "",
         price: "",
         tags: [],
-        picture : "",
+        picture: "",
         description: ""
       },
-      
+      fullPicture: "",
+      aspectRatio: 16 / 9,
+      width: "400",
+
       tag: "",
-      tags : []
+      tags: []
     };
   },
-  created(){
+  created() {
     this.food = this.item;
     this.tags = createTags(this.food.tags, []);
   },
   methods: {
-    handleFileUpload(e){
-      
-      //console.log(type(this.tags));
-
-
-      let file = e.target.files[0]
+    handleFileUpload(e) {
+      let file = e.target.files[0];
       console.log(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
 
-      let width = 800
-      let height = 800
       reader.onload = event => {
-        const img = new Image();
-        img.src = event.target.result;
-        img.onload = () => {
-          const elem = document.createElement("canvas")
-          elem.width = width
-          elem.height = height
-          const ctx = elem.getContext('2d')
-          ctx.drawImage(img, 0,0, width, height);
-          let base64 = elem.toDataURL('image/jpeg', 0.5);
-          console.log(base64);
-          this.food.picture = base64;
-        }
-      }
-      //console.log(base64);
+        this.fullPicture = event.target.result;
+      };
+    },
+    updateCroppedImage(x, y, w, h) {
+      let width = this.width;
+      let height = parseInt(width * (1 / this.aspectRatio));
+      console.log("height:" + height);
 
+      let img = new Image();
+      img.src = this.fullPicture;
+
+      img.onload = () => {
+        const elem = document.createElement("canvas");
+        elem.width = width;
+        elem.height = height;
+        const ctx = elem.getContext("2d");
+        ctx.drawImage(img, x, y, w, h, 0, 0, width, height);
+        let base64 = elem.toDataURL("image/jpeg", 0.5);
+        console.log(base64);
+        this.food.picture = base64;
+        this.hasFile = true;
+      };
+    },
+
+    cropperChange({ coordinates, canvas }) {
+      console.log(coordinates, canvas);
+      // convert ROI to base64 and store into this.food.picture
+      this.updateCroppedImage(
+        parseInt(coordinates.left),
+        parseInt(coordinates.top),
+        parseInt(coordinates.width),
+        parseInt(coordinates.height)
+      );
     },
     showSuccessMsg() {
-        
-        this.$bvModal.msgBoxOk('修改成功')
-          .then(value => {
-            this.$router.push({name: 'myfoods'})
-          })
-          .catch(err => {
-            // An error occurred
-          })
-      },
+      this.$bvModal
+        .msgBoxOk("修改成功")
+        .then(value => {
+          this.$router.push({ name: "myfoods" });
+        })
+        .catch(err => {
+          // An error occurred
+        });
+    },
     startEditFood() {
       let self = this;
       let token = localStorage.getItem("token");
@@ -115,12 +154,11 @@ export default {
         headers: { Authorization: "bearer " + token }
       };
 
-  
-      let new_tags = []
+      let new_tags = [];
 
       this.tags.forEach(t => {
         new_tags.push(t.text);
-      })
+      });
 
       this.food.tags = new_tags;
 
@@ -130,7 +168,7 @@ export default {
         .put("/food", this.food, config)
         .then(function(response) {
           console.log(response);
-          //self.$emit('signupComplete', response.data);       
+          //self.$emit('signupComplete', response.data);
           //self.$router.push({ name: "foods" });
           self.showSuccessMsg();
         })

@@ -3,24 +3,31 @@
     <vue-bootstrap-typeahead
       class="mb-2"
       v-model="query"
+      ref="typehead"
       :minMatchingChars="1"
       :data="keywordList"
       :placeholder="messagePrefix + '搜尋標籤、店家、食物名稱...'"
     />
     <b-row>
       <b-col sm="12" md="6" lg="4" v-for="(item,index) in searchResult" :key="index">
-        <b-card class="shadow-sm" :img-src="item.picture">
-          <div class="food-card card-body">
-            <h5 class="card-title">{{ item.name }}</h5>
+        <div class="food-card card shadow-sm mb-3">
+          <div class="img-wrapper">
+            <img :src="item.picture" class="card-img-top" alt="image of the food." />
+          </div>
+          <div class="card-body">
+            <h5 class="card-title"><span class="searchable" @click="setQuery(item.name)">{{ item.name }}</span></h5>
             <h6>
-              <font-awesome-icon icon="store-alt"></font-awesome-icon>
-              {{ item.shop }}
+              <span class="searchable" @click="setQuery(item.shop)">
+                <font-awesome-icon icon="store-alt"></font-awesome-icon>
+                {{ item.shop }}
+              </span>
             </h6>
             <p class="tags card-text text-left">
               <span
-                class="badge badge-success"
+                class="badge badge-success searchable"
                 v-for="(tag,index) in item.tags"
                 :key="index"
+                @click="setQuery(tag)"
               >{{ tag }}</span>
             </p>
             <p class="card-text text-left">{{ item.description }}</p>
@@ -37,7 +44,7 @@
               </small>-->
             </div>
           </div>
-        </b-card>
+        </div>
       </b-col>
     </b-row>
   </b-container>
@@ -47,7 +54,7 @@
 import VueBootstrapTypeahead from "vue-bootstrap-typeahead";
 export default {
   name: "foodcardlist",
-  props: ["foods","messagePrefix"],
+  props: ["foods", "messagePrefix"],
   components: {
     VueBootstrapTypeahead
   },
@@ -57,7 +64,14 @@ export default {
     };
   },
 
-  methods: {},
+  methods: {
+    setQuery(s){
+      this.query = s;
+      this.$refs.typehead.inputValue = s;
+      //console.log(this.$refs.typehead);
+      //this.$refs.typehead.$refs.input.focus();
+    }
+  },
   computed: {
     searchResult() {
       console.log("debug 62");
@@ -65,6 +79,7 @@ export default {
 
       let kw = this.query;
       return this.foods.filter(food => {
+        if(food.shop.indexOf(kw) !== -1) return true;
         if (food.name.indexOf(kw) !== -1) return true;
         //console.log(food.tags);
         if (food.tags.join(" ").indexOf(kw) !== -1) return true;
@@ -98,19 +113,36 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
+.food-card {
+  .price {
+    font-weight: bold;
+  }
+  .tags span {
+    margin: 0 5px;
+    font-size: 0.8rem;
+  }
+  h6 {
+    color: rgb(109, 109, 109);
+  }
+  .img-wrapper{
+      overflow:hidden;
+      img{
+          filter:brightness(95%);
+          transition: filter .8s ease,transform .8s ease;
+          &:hover{
+            transform: scale(1.2);
+            filter:brightness(105%);
+          }
+      }
+  }
+  .searchable{
+    cursor: pointer;
+    transition: background-color .5s ease, color .5s ease;
+    &:hover{
+      background:#fff3af;
+      color:#2d132c;
+    }
+  }
 
-.food-img {
-  max-height: 200px;
-  overflow: hidden;
-}
-.food-list .price {
-  font-weight: bold;
-}
-.tags span {
-  margin: 0 5px;
-  font-size: 0.8rem;
-}
-.food-card h6 {
-  color: rgb(109, 109, 109);
 }
 </style>
