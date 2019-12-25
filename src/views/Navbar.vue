@@ -1,58 +1,72 @@
 <template>
   <div>
-     <b-navbar toggleable="md" type="light" variant="light" fixed="top">
-    <b-navbar-brand href="#">探索屏東美食</b-navbar-brand>
+    <b-navbar toggleable="lg" type="light" variant="light" fixed="top">
+      <b-navbar-brand href="#">探索屏東美食</b-navbar-brand>
 
-    <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-    <b-collapse id="nav-collapse" is-nav>
-      <b-navbar-nav>
-      <b-nav-item>
-        <router-link to="/">Home</router-link>
-      </b-nav-item>
-      <b-nav-item>
-        <router-link to="/about">About</router-link>
-      </b-nav-item>
-
-      <template v-if="isLoggedIn">
-        <template v-if="type== 'student'">
-          <b-nav-item :to="{ name: 'foods' }">探索美食</b-nav-item>
-          <b-nav-item :to="{ name: 'favorites' }">我的最愛</b-nav-item>
-          <b-nav-item :to="{ name: 'cart' }">
-            購買清單
-            <b-badge v-if="orderCount > 0" variant="info">{{orderCount }}</b-badge>
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav>
+          <b-nav-item>
+            <router-link to="/">Home</router-link>
           </b-nav-item>
-          <b-nav-item :to="{ name: 'orderhistory' }">
-            訂單查詢
-            <b-badge v-if="notifications.length > 0" variant="info">{{ notifications.length }}</b-badge>
+          <b-nav-item>
+            <router-link to="/about">About</router-link>
           </b-nav-item>
-          <b-nav-item :to="{ name: 'profile' }">我的帳號</b-nav-item>
-        </template>
 
-        <template v-if="type== 'shop'">
-          <b-nav-item :to="{ name: 'myfoods' }">我的食物</b-nav-item>
+          <template v-if="isLoggedIn">
+            <template v-if="type== 'student'">
+              <b-nav-item :to="{ name: 'foods' }">探索美食</b-nav-item>
+              <b-nav-item :to="{ name: 'favorites' }">我的最愛</b-nav-item>
+              <b-nav-item :to="{ name: 'cart' }">
+                點菜清單
+                <b-badge v-if="orderCount > 0" variant="info">{{orderCount }}</b-badge>
+              </b-nav-item>
+              <b-nav-item :to="{ name: 'orderhistory' }">
+                訂單查詢
+                <b-badge v-if="notifications.length > 0" variant="info">{{ notifications.length }}</b-badge>
+              </b-nav-item>
+              <b-nav-item :to="{ name: 'profile' }">我的帳號</b-nav-item>
+            </template>
 
-          <b-nav-item :to="{ name: 'addfood' }">新增食物</b-nav-item>
-          <b-nav-item :to="{ name: 'orderlist' }">檢視訂單</b-nav-item>
+            <template v-if="type== 'shop'">
+              <b-nav-item :to="{ name: 'myfoods' }">我的食物</b-nav-item>
 
-          <b-nav-item :to="{ name: 'shopprofile' }">店家設定</b-nav-item>
-        </template>
-        
-      </template>
+              <b-nav-item :to="{ name: 'addfood' }">新增食物</b-nav-item>
+              <b-nav-item :to="{ name: 'orderlist' }">檢視訂單</b-nav-item>
 
-      
-      </b-navbar-nav>
+              <b-nav-item :to="{ name: 'shopprofile' }">店家設定</b-nav-item>
 
-      <!-- Right aligned nav items -->
-      <b-navbar-nav class="ml-auto">
-        <template v-if="isLoggedIn">          
-          <b-nav-item @click.prevent="logout">登出 {{ userName }}</b-nav-item>
-        </template>        
-        <b-nav-item v-if="!isLoggedIn" :to="{ name: 'login' }">登入</b-nav-item>
-      </b-navbar-nav>
-    </b-collapse>
-  </b-navbar>
+              <b-button-group class="ml-2">
+                <b-button id="shop-open-button" @click="changeShopState('open')" :variant="openBtnVarient">
+                  <font-awesome-icon v-if="shop.status === 'open'" class="mr-2" size="xs" :style="{color:'rgb(66,183,42)', position: 'relative',top : '-1px'}" icon="circle"></font-awesome-icon>
+                  營業中</b-button>
+                <b-tooltip v-if="shop.status !== 'open'" target="shop-open-button" triggers="hover">按這裡將您的店家設為營業狀態，開始接收訂單吧！</b-tooltip>
+                <b-tooltip v-else target="shop-open-button" triggers="hover">您的店家目前已設為營業狀態，學生可隨時向您下訂單！</b-tooltip>
+                <b-button id="shop-closed-button" @click="changeShopState('closed')" :variant="closedBtnVarient">
+                  <font-awesome-icon v-if="shop.status === 'closed'" class="mr-2" size="xs" :style="{color:'#f67280', position: 'relative',top : '-1px'}" icon="circle"></font-awesome-icon>
+                  休息中</b-button>
+                <b-tooltip v-if="shop.status !== 'closed'" target="shop-closed-button" triggers="hover">按這裡將您的店家設為休息狀態，學生將無法下訂單！</b-tooltip>
+                <b-tooltip v-else target="shop-closed-button" triggers="hover">您的店家目前已設為休息狀態，學生無法向您下訂單！</b-tooltip>
+                <b-button id="shop-full-button" @click="changeShopState('full')" :variant="fullBtnVarient">
+                  <font-awesome-icon v-if="shop.status === 'full'" class="mr-2" size="xs" :style="{color:'#f67280', position: 'relative',top : '-1px'}" icon="circle"></font-awesome-icon>
+                  訂單已滿</b-button>
+                <b-tooltip v-if="shop.status !== 'full'" target="shop-full-button" triggers="hover">按這裡將您的店家設為已滿狀態，學生將無法下訂單！</b-tooltip>
+                <b-tooltip v-else target="shop-full-button" triggers="hover">您的店家目前已設為已滿狀態，學生無法向您下訂單！</b-tooltip>
+              </b-button-group>
+            </template>
+          </template>
+        </b-navbar-nav>
 
+        <!-- Right aligned nav items -->
+        <b-navbar-nav class="ml-auto">
+          <template v-if="isLoggedIn">
+            <b-nav-item @click.prevent="logout">登出 {{ userName }}</b-nav-item>
+          </template>
+          <b-nav-item v-if="!isLoggedIn" :to="{ name: 'login' }">登入</b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
   </div>
 </template>
 
@@ -64,9 +78,15 @@ export default {
   data() {
     return {
       isLoggedIn: false,
-      type: "guest"
+      type: "guest",
+      shop: "",
+      student:"",
+      buttonVariant: {
+        active: "primary",
+        inactive: "outline-primary"
+      }
     };
-  },    
+  },
   beforeMount() {
     this.checkLogin();
   },
@@ -83,11 +103,90 @@ export default {
       }
     },
     checkLogin() {
+      let self = this;
+
       this.isLoggedIn = localStorage.getItem("token") !== null;
       this.type = localStorage.getItem("user");
+      if (this.isLoggedIn) {
+        let token = localStorage.getItem("token");
+        let config = {
+          headers: { Authorization: "bearer " + token }
+        };
+        if (this.type === "student") {
+          this.$http
+            .get("/student", config)
+            .then(function(response) {
+              console.log(response);
+              if (response.data) {
+                self.student = response.data;
+                console.log(self.student);
+              }
+            })
+            .catch(function(error) {
+              console.log(error.response.data);
+            });
+        }
+
+        if (this.type === "shop") {
+          this.$http
+            .get("/shop", config)
+            .then(function(response) {
+              console.log(response);
+              if (response.data) {
+                self.shop = response.data;
+                console.log(self.shop);                
+              }
+            })
+            .catch(function(error) {
+              console.log(error.response.data);
+            });
+        }
+      }
+    },
+    changeShopState(target) {
+      if (!(target === "open" || target === "full" || target === "closed"))
+        return;
+      if (target === this.shop.status) return;
+
+      let self = this;
+      let token = localStorage.getItem("token");
+      let config = {
+        headers: { Authorization: "bearer " + token }
+      };
+
+      this.$http
+        .put(
+          "/shop/status",
+          {
+            status: target
+          },
+          config
+        )
+        .then(function(response) {
+          console.log(response);
+          self.shop.status = target;
+        })
+        .catch(function(error) {
+          console.log(error);
+          console.log(error.response.data);
+        });
+
+      console.log(target);
     }
   },
   computed: {
+    openBtnVarient() {
+      if (this.shop.status === "open") return this.buttonVariant.active;
+      return this.buttonVariant.inactive;
+    },
+    closedBtnVarient() {
+      if (this.shop.status === "closed") return this.buttonVariant.active;
+      return this.buttonVariant.inactive;
+    },
+    fullBtnVarient() {
+      if (this.shop.status === "full") return this.buttonVariant.active;
+      return this.buttonVariant.inactive;
+    },
     orderCount() {
       //console.log(this.orders);
 
@@ -101,12 +200,15 @@ export default {
       return count;
     },
 
-    userName(){
-      if(!this.isLoggedIn) return '';
-      let token = localStorage.getItem("token");
-      let user = VueJwtDecode.decode(token);
-      
-      return user.name;      
+    userName() {
+      if (!this.isLoggedIn) return "";
+      if(this.type === 'student'){       
+        return this.student.name;
+      }
+      if(this.type === 'shop'){
+        return this.shop.name;
+      }
+      return '';
     }
   },
   created() {
@@ -121,9 +223,9 @@ export default {
 </script>
 <style lang="scss">
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-.router-link-exact-active{
-  font-weight: bold;  
-  background:#ddd;
+.router-link-exact-active {
+  font-weight: bold;
+  background: #ddd;
   border-radius: 5px;
 }
 /*#nav {

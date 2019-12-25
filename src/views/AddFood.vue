@@ -141,6 +141,8 @@ export default {
           this.food.price = "";
           this.food.tags = [];
           this.food.picture = "";
+          this.food.description = "";
+          this.$router.push({ name: "myfoods" });
         })
         .catch(err => {
           // An error occurred

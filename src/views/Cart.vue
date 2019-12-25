@@ -6,7 +6,7 @@
     <OrderCardList :orders="orders">
       <template v-slot:top="props">
         <font-awesome-icon icon="store-alt"></font-awesome-icon>
-        {{ props.order.shop}}
+        {{ props.order.shop.name}}
       </template>
 
       <template v-slot:item="props">

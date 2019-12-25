@@ -221,6 +221,9 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+.modal-content{
+  font-family: "微軟正黑體";
+}
 .slide-fade-enter-active {
   transition: all 0.8s ease;
 }

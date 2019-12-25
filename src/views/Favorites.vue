@@ -1,6 +1,6 @@
 <template>
-  <FoodCardList :foods="likedFoods" message-prefix="在我的最愛中" v-slot="props">
-    <button type="button" class="btn btn-sm btn-primary" @click="addToCart(props.item)">
+  <FoodCardList :foods="likedFoods" show-status="true" message-prefix="在我的最愛中" v-slot="props">
+    <button :disabled="props.item.shop.status !== 'open'" type="button" class="btn btn-sm btn-primary" @click="addToCart(props.item)">
       <font-awesome-icon icon="cart-plus"></font-awesome-icon>加入購買清單
     </button>
     <button
@@ -109,6 +109,31 @@ export default {
       .catch(function(error) {
         console.log(error.response.data);
       });
+
+    this.sockets.subscribe("shop_change", data => {
+      console.log(data);
+      this.foods = this.foods.map(food => {
+        if (food.shop._id === data._id) {
+          food.shop = data;
+        }
+        return food;
+      });
+    });
+
+    this.sockets.subscribe("food_change", data => {
+      console.log("food changed");
+      //console.log(data);
+      this.foods = this.foods.map(food => {
+        if (food._id === data._id) {
+          console.log("debug 166");
+          console.log(data);
+          return data;
+        }
+        return food;
+      });
+
+      console.log(this.foods);
+    });
   }
 };
 </script>

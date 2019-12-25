@@ -17,9 +17,10 @@
           <div class="card-body">
             <h5 class="card-title"><span class="searchable" @click="setQuery(item.name)">{{ item.name }}</span></h5>
             <h6>
-              <span class="searchable" @click="setQuery(item.shop)">
+              <span class="searchable" @click="setQuery(item.shop.name)">
                 <font-awesome-icon icon="store-alt"></font-awesome-icon>
-                {{ item.shop }}
+                {{ item.shop.name }}
+                <b-badge v-if="showStatus" :variant="getStatusVariant(item.shop.status)">{{ getStatusName(item.shop.status) }}</b-badge>
               </span>
             </h6>
             <p class="tags card-text text-left">
@@ -54,7 +55,7 @@
 import VueBootstrapTypeahead from "vue-bootstrap-typeahead";
 export default {
   name: "foodcardlist",
-  props: ["foods", "messagePrefix"],
+  props: ["foods", "messagePrefix", "showStatus"],
   components: {
     VueBootstrapTypeahead
   },
@@ -70,6 +71,16 @@ export default {
       this.$refs.typehead.inputValue = s;
       //console.log(this.$refs.typehead);
       //this.$refs.typehead.$refs.input.focus();
+    },
+    getStatusName(status){
+      if(status === 'full') return "訂單已滿";
+      if(status === 'closed') return "休息中";
+      if(status === 'open') return "營業中";
+    },
+    getStatusVariant(status){
+      if(status === 'full') return "secondary";
+      if(status === 'closed') return "danger";
+      if(status === 'open') return "info";
     }
   },
   computed: {
@@ -79,7 +90,7 @@ export default {
 
       let kw = this.query;
       return this.foods.filter(food => {
-        if(food.shop.indexOf(kw) !== -1) return true;
+        if(food.shop.name.indexOf(kw) !== -1) return true;
         if (food.name.indexOf(kw) !== -1) return true;
         //console.log(food.tags);
         if (food.tags.join(" ").indexOf(kw) !== -1) return true;
@@ -98,7 +109,7 @@ export default {
 
       self.foods.forEach(food => {
         addToKeyword(food.name);
-        addToKeyword(food.shop);
+        addToKeyword(food.shop.name);
         food.tags.forEach(tag => {
           addToKeyword(tag);
         });
