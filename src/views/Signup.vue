@@ -71,6 +71,8 @@ export default {
           //self.$emit('signupComplete', response.data);
           localStorage.setItem('token', response.data.token);
           localStorage.setItem('user', response.data.user.type);
+
+          self.$bus.$emit('logged','a newly-registered user logged in.');
         })
         .catch(function(error) {
           console.log(JSON.stringify(error.response.data));

@@ -93,6 +93,7 @@ export default {
   },
   created() {
     this.food = this.item;
+    this.food.picture = '';
     this.tags = createTags(this.food.tags, []);
   },
   methods: {
@@ -161,7 +162,7 @@ export default {
       });
 
       this.food.tags = new_tags;
-
+      if(this.food.picture === '') delete this.food['picture'];
       console.log(this.food);
 
       this.$http

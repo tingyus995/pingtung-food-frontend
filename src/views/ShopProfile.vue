@@ -208,6 +208,7 @@ export default {
           //self.$router.push({ name: "foods" });
           self.showSuccessMsg("儲存成功", () => {
             self.$refs["change-shop-info-modal"].hide();
+            self.$bus.$emit('navbar_update','shop name changed.');
           });
         })
         .catch(function(error) {

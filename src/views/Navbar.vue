@@ -218,6 +218,9 @@ export default {
     this.$bus.$on("logged", () => {
       self.checkLogin();
     });
+    this.$bus.$on("navbar_update", () => {
+      self.checkLogin();
+    })
   }
 };
 </script>
