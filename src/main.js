@@ -9,8 +9,10 @@ import moment from "moment";
 import VueMomentJS from "vue-momentjs";
 import VueLodash from 'vue-lodash';
 
+const BASE_URL = process.env.VUE_APP_API_URL
+
 axios.defaults.timeout = 5000;
-axios.defaults.baseURL = "http://localhost:3030"
+axios.defaults.baseURL = BASE_URL
 Vue.prototype.$http = axios;
 Vue.prototype.$bus = eventBus;
 /*axios.interceptors.request.use(
@@ -31,7 +33,7 @@ Vue.prototype.$bus = eventBus;
 
 Vue.use(new VueSocketIO({
   debug: true,
-  connection: 'http://localhost:3030',
+  connection: BASE_URL,
   vuex: {      
   },
   //options: { path: "/my-app/" } //Optional options
