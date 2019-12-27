@@ -4,6 +4,10 @@
 ```
 npm install
 ```
+### Environment variables
+```
+export VUE_APP_API_URL=http://localhost:3030
+```
 
 ### Compiles and hot-reloads for development
 ```

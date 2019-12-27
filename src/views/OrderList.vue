@@ -1,4 +1,8 @@
 <template>
+    <div>
+      <template v-if="shopOrders.length === 0">
+        <b-alert show variant="info">目前尚未有訂單喔</b-alert>
+      </template>
     <OrderCardList :orders="shopOrders.slice().reverse()" show-time="true">
       <template v-slot:top="props">
         <b-badge :variant="getVariant(props.order)" class="float-left">{{ getStatus(props.order) }}</b-badge>
@@ -32,6 +36,7 @@
         </b-button>
       </template>
     </OrderCardList>
+    </div>
 
 </template>
 

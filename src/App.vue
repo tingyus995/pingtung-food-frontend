@@ -225,7 +225,7 @@ export default {
   font-family: "微軟正黑體";
 }
 .slide-fade-enter-active {
-  transition: all 0.8s ease;
+  transition: all 0.6s ease;
 }
 .slide-fade-leave-active {
 }

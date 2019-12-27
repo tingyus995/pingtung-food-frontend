@@ -1,12 +1,21 @@
 <template>
-  <FoodCardList :foods="foods" message-prefix="在我的食物中" v-slot="props">
-    <button type="button" class="btn btn-sm btn-warning" @click="editFood(props.item)">
-      <font-awesome-icon icon="edit"></font-awesome-icon>編輯
-    </button>
-    <button type="button" class="btn btn-sm btn-danger" @click="deleteFood(props.item)">
-      <font-awesome-icon icon="trash-alt"></font-awesome-icon>刪除
-    </button>
-  </FoodCardList>
+  <div>
+    <template v-if="foods.length === 0">
+      <b-alert show variant="info">
+        您的店家目前沒有食物喔
+        <br />趕緊新增食物讓學生點吧！
+      </b-alert>
+      <b-button :to="{name : 'addfood'}" variant="primary">新增食物</b-button>
+    </template>
+    <FoodCardList v-else :foods="foods" message-prefix="在我的食物中" v-slot="props">
+      <button type="button" class="btn btn-sm btn-warning" @click="editFood(props.item)">
+        <font-awesome-icon icon="edit"></font-awesome-icon>編輯
+      </button>
+      <button type="button" class="btn btn-sm btn-danger" @click="deleteFood(props.item)">
+        <font-awesome-icon icon="trash-alt"></font-awesome-icon>刪除
+      </button>
+    </FoodCardList>
+  </div>
 </template>
 
 <script>

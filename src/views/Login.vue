@@ -1,56 +1,34 @@
 <template>
-  <div class="login container-fluid">
-    <form class="form-signin">
-      <!--<img class="mb-4" src="/docs/4.4/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">-->
-      <h1 class="h3 mb-3 font-weight-normal">請登入</h1>
-       <b-alert v-if="errorMsg" show variant="danger">{{ errorMsg }}</b-alert>
-      <label for="inputEmail" class="sr-only">Email</label>
-      <input
-        v-model="user.email"
-        type="email"
-        id="inputEmail"
-        class="form-control"
-        placeholder="E-mail"
-        required
-        autofocus
-      />
-      <label for="inputPassword" class="sr-only">密碼</label>
-      <input
-        v-model="user.password"
-        type="password"
-        id="inputPassword"
-        class="form-control"
-        placeholder="密碼"
-        required
-      />
-      <div class="checkbox mb-3">
-        <label> <input type="checkbox" value="remember-me" /> 記住我 </label>
-      </div>
-      <button class="btn btn-lg btn-primary btn-block" type="submit" @click.prevent="startLogin">
-        登入
-      </button>
-      <p class="mt-5 mb-3 text-muted">&copy; 2017-2019</p>
-    </form>
-  </div>
+      <LoginForm @login="startLogin" :error-message="errorMsg" >
+        <template v-slot:header>
+          <h1 class="h3 mb-3 font-weight-normal">請登入</h1>
+        </template>
+        <template v-slot:footer>
+           <p><b-link :to="{name : 'signup'}">申請學生帳號</b-link></p>
+           <p><b-link :to="{name : 'shoplogin'}">我是店家</b-link></p>
+        </template>
+      </LoginForm>
 </template>
 
 <script>
+import LoginForm from "../components/LoginForm"
 export default {
   name: "login",
+    components:{
+    LoginForm
+  },
   data() {
     return {
-      user : {
-        email : "",
-        password : ""
-      },
+     
       errorMsg : null
     };
   },
   methods : {
-    startLogin(){
+    startLogin(user){
       let self = this;
+      self.errorMsg = '';
             this.$http
-      .post("/student/login", this.user)
+      .post("/student/login", user)
         .then(function(response) {
           console.log(response);
           //self.$emit('signupComplete', response.data);

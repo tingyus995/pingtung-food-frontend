@@ -3,7 +3,7 @@
     <form class="form-signin">
       <!--<img class="mb-4" src="/docs/4.4/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">-->
       <h1 class="h3 mb-3 font-weight-normal">申請一個帳號</h1>
-      <b-alert variant="success" show>提醒您，這裡是店家端帳號申請頁面，如果您是學生，請按<router-link :to="{name:'signup'}">這裡</router-link>前往學生端登入頁面。</b-alert>
+      <b-alert variant="success" show>提醒您，這裡是店家帳號申請頁面，如果您是學生，請按<router-link :to="{name:'signup'}">這裡</router-link>前往學生帳號申請頁面。</b-alert>
       <label for="inputName" class="sr-only">店家名稱</label>
       <input
         v-model="user.name"
