@@ -1,5 +1,13 @@
 <template>
-  <FoodCardList :foods="likedFoods" show-status="true" message-prefix="在我的最愛中" v-slot="props">
+<div>
+    <template v-if="likedFoods.length === 0">
+      <b-alert show variant="info">
+        我的最愛清單內沒有食物喔
+        <br />趕緊到探索美食展開探險吧
+      </b-alert>
+      <b-button :to="{name : 'foods'}" variant="primary">探索美食</b-button>
+    </template>
+  <FoodCardList v-else :foods="likedFoods" show-status="true" message-prefix="在我的最愛中" v-slot="props">
     <button :disabled="props.item.shop.status !== 'open'" type="button" class="btn btn-sm btn-primary" @click="addToCart(props.item)">
       <font-awesome-icon icon="cart-plus"></font-awesome-icon>加入購買清單
     </button>
@@ -21,6 +29,7 @@
       <font-awesome-icon icon="heart"></font-awesome-icon>加到最愛
     </button>
   </FoodCardList>
+  </div>
 </template>
 
 <script>

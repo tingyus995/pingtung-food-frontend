@@ -1,4 +1,12 @@
 <template>
+<div>
+      <template v-if="orders.length === 0">
+      <b-alert show variant="info">
+        您還沒下任何訂單喔
+        <br />趕緊到探索美食展開探險吧
+      </b-alert>
+      <b-button :to="{name : 'foods'}" variant="primary">探索美食</b-button>
+    </template>
   <OrderCardList :orders="orders.slice().reverse()" show-time="true">
     <template v-slot:top="props">
       <div class="status">
@@ -8,6 +16,7 @@
       {{ props.order.shop}}
     </template>
   </OrderCardList>
+  </div>
 </template>
 
 <script>

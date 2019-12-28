@@ -2,25 +2,25 @@
   <div id="app">
     <Navbar :orders="orders" :notifications="notifications" />
 
-    <b-alert
-      v-for="(no,index) in notifications"
-      :key="index"
-      show="true"
-      :variant="no.varient"
-      @dismissed="deleteNotification(index)"
-      dismissible
-    >{{ no.message }}</b-alert>
-
-    <transition name="slide-fade">
-      <router-view
-        class="app-view"
-        :orders="orders"
-        :shopOrders="shopOrders"
-        @cart_add="addToCart"
-        @cart_remove="removeFromCart"
-        @remove_order="removeOrder"
-      />
-    </transition>
+    <div class="app-view">
+      <b-alert
+        v-for="(no,index) in notifications"
+        :key="index"
+        show="true"
+        :variant="no.varient"
+        @dismissed="deleteNotification(index)"
+        dismissible
+      >{{ no.message }}</b-alert>
+      <transition name="slide-fade">
+        <router-view
+          :orders="orders"
+          :shopOrders="shopOrders"
+          @cart_add="addToCart"
+          @cart_remove="removeFromCart"
+          @remove_order="removeOrder"
+        />
+      </transition>
+    </div>
   </div>
 </template>
 <script>
@@ -89,6 +89,8 @@ export default {
         varient,
         message: "一個訂單已經" + verb + "囉！"
       });
+
+      console.log(this.notifications);
     });
   },
   methods: {
@@ -204,10 +206,9 @@ export default {
     }
     getAllOrders();
 
-    this.$bus.$on('logged', () => {
+    this.$bus.$on("logged", () => {
       getAllOrders();
-    })
-    
+    });
   }
 };
 </script>
@@ -221,7 +222,7 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-.modal-content{
+.modal-content {
   font-family: "微軟正黑體";
 }
 .slide-fade-enter-active {
@@ -235,10 +236,10 @@ export default {
   opacity: 0;
 }
 
-.app-view{
-  margin:0 auto;
-  margin-top:70px;
-  max-width: 1200px;  
+.app-view {
+  margin: 0 auto;
+  margin-top: 70px;
+  max-width: 1200px;
 }
 </style>
 
