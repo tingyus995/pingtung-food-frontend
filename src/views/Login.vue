@@ -4,6 +4,7 @@
           <h1 class="h3 mb-3 font-weight-normal">請登入</h1>
         </template>
         <template v-slot:footer>
+          <p><b-link :to="{name : 'forgetpassword'}">忘記密碼？</b-link></p>
            <p><b-link :to="{name : 'signup'}">申請學生帳號</b-link></p>
            <p><b-link :to="{name : 'shoplogin'}">我是店家</b-link></p>
         </template>

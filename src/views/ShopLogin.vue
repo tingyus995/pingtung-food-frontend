@@ -8,6 +8,7 @@
       </b-alert>
     </template>
     <template v-slot:footer>
+      <p><b-link :to="{name : 'shopforgetpassword'}">忘記密碼？</b-link></p>
        <b-link :to="{name : 'shopsignup'}">申請店家帳號</b-link>
     </template>
   </LoginForm>

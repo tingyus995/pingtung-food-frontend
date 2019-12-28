@@ -44,6 +44,7 @@
       </b-list-group>
     </b-card>
 
+
     <b-modal ref="change-shop-info-modal" id="change-shop-info-modal" title="變更店家資訊" centered>
       <div class="form-group">
         <label for="shopName">店家名稱</label>

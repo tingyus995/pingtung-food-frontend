@@ -11,7 +11,7 @@ import Cart from "../views/Cart.vue";
 import Favorites from "../views/Favorites.vue";
 import Profile from "../views/Profile.vue";
 import OrderHistory from "../views/OrderHistory.vue";
-
+import ForgetPassword from "../views/ForgetPassword.vue";
 
 // shop
 
@@ -21,6 +21,7 @@ import ShopLogin from "../views/ShopLogin.vue"
 import EditFood from "../views/EditFood.vue"
 import MyFoods from "../views/MyFoods.vue"
 import ShopProfile from "../views/ShopProfile.vue";
+import ShopForgetPassword from "../views/ShopForgetPassword.vue";
 
 
 // bootstrap
@@ -63,6 +64,11 @@ const routes = [
     path: "/signup",
     name: "signup",
     component: Signup
+  },
+  {
+    path: "/forgetpassword",
+    name: "forgetpassword",
+    component: ForgetPassword
   },
   {
     path: "/cart",
@@ -127,6 +133,11 @@ const routes = [
     path: "/shop/login",
     name: "shoplogin",
     component: ShopLogin
+  },
+  {
+    path: "/shop/forgetpassword",
+    name: "shopforgetpassword",
+    component: ShopForgetPassword
   }
 
 ];
@@ -138,7 +149,7 @@ const router = new VueRouter({
 });
 router.beforeEach((to, from, next)=>{
   
-  let guest_allowed_paths = ['/login', '/signup', '/', '/shop/signup', '/shop/login']
+  let guest_allowed_paths = ['/login', '/forgetpassword', '/signup', '/', '/shop/signup', '/shop/login','/shop/forgetpassword']
   
   
   const isLogin = localStorage.getItem('token') != null;
