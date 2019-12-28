@@ -91,6 +91,27 @@ export default {
       //this.shopOrders.unshift(data);
       //console.log(this.shopOrders);
     });
+
+      this.sockets.subscribe("new_order_self", data => {
+      // for student
+      
+      //console.log(data);
+      console.log("student new order");
+      console.log(data);
+
+      let found = false;
+      for(let i = 0; i < this.orders.length; ++i){
+        if(this.orders[i]._id === data._id){
+          found = true;
+          break;
+        }
+      }
+      if(!found){
+        this.orders.push(data);
+      }else{
+        console.log("Order already exists, no need to push.");
+      }
+    });
   },
 
   methods: {

@@ -38,21 +38,75 @@
               <b-nav-item :to="{ name: 'shopprofile' }">店家設定</b-nav-item>
 
               <b-button-group class="ml-2">
-                <b-button id="shop-open-button" @click="changeShopState('open')" :variant="openBtnVarient">
-                  <font-awesome-icon v-if="shop.status === 'open'" class="mr-2" size="xs" :style="{color:'rgb(66,183,42)', position: 'relative',top : '-1px'}" icon="circle"></font-awesome-icon>
-                  營業中</b-button>
-                <b-tooltip v-if="shop.status !== 'open'" target="shop-open-button" triggers="hover">按這裡將您的店家設為營業狀態，開始接收訂單吧！</b-tooltip>
-                <b-tooltip v-else target="shop-open-button" triggers="hover">您的店家目前已設為營業狀態，學生可隨時向您下訂單！</b-tooltip>
-                <b-button id="shop-closed-button" @click="changeShopState('closed')" :variant="closedBtnVarient">
-                  <font-awesome-icon v-if="shop.status === 'closed'" class="mr-2" size="xs" :style="{color:'#f67280', position: 'relative',top : '-1px'}" icon="circle"></font-awesome-icon>
-                  休息中</b-button>
-                <b-tooltip v-if="shop.status !== 'closed'" target="shop-closed-button" triggers="hover">按這裡將您的店家設為休息狀態，學生將無法下訂單！</b-tooltip>
-                <b-tooltip v-else target="shop-closed-button" triggers="hover">您的店家目前已設為休息狀態，學生無法向您下訂單！</b-tooltip>
-                <b-button id="shop-full-button" @click="changeShopState('full')" :variant="fullBtnVarient">
-                  <font-awesome-icon v-if="shop.status === 'full'" class="mr-2" size="xs" :style="{color:'#f67280', position: 'relative',top : '-1px'}" icon="circle"></font-awesome-icon>
-                  訂單已滿</b-button>
-                <b-tooltip v-if="shop.status !== 'full'" target="shop-full-button" triggers="hover">按這裡將您的店家設為已滿狀態，學生將無法下訂單！</b-tooltip>
-                <b-tooltip v-else target="shop-full-button" triggers="hover">您的店家目前已設為已滿狀態，學生無法向您下訂單！</b-tooltip>
+                <b-button
+                  id="shop-open-button"
+                  @click="changeShopState('open')"
+                  :variant="openBtnVarient"
+                >
+                  <font-awesome-icon
+                    v-if="shop.status === 'open'"
+                    class="mr-2"
+                    size="xs"
+                    :style="{color:'rgb(66,183,42)', position: 'relative',top : '-1px'}"
+                    icon="circle"
+                  ></font-awesome-icon>營業中
+                </b-button>
+                <b-tooltip
+                  v-if="shop.status !== 'open'"
+                  target="shop-open-button"
+                  triggers="hover"
+                >按這裡將您的店家設為營業狀態，開始接收訂單吧！</b-tooltip>
+                <b-tooltip
+                  v-else
+                  target="shop-open-button"
+                  triggers="hover"
+                >您的店家目前已設為營業狀態，學生可隨時向您下訂單！</b-tooltip>
+                <b-button
+                  id="shop-closed-button"
+                  @click="changeShopState('closed')"
+                  :variant="closedBtnVarient"
+                >
+                  <font-awesome-icon
+                    v-if="shop.status === 'closed'"
+                    class="mr-2"
+                    size="xs"
+                    :style="{color:'#f67280', position: 'relative',top : '-1px'}"
+                    icon="circle"
+                  ></font-awesome-icon>休息中
+                </b-button>
+                <b-tooltip
+                  v-if="shop.status !== 'closed'"
+                  target="shop-closed-button"
+                  triggers="hover"
+                >按這裡將您的店家設為休息狀態，學生將無法下訂單！</b-tooltip>
+                <b-tooltip
+                  v-else
+                  target="shop-closed-button"
+                  triggers="hover"
+                >您的店家目前已設為休息狀態，學生無法向您下訂單！</b-tooltip>
+                <b-button
+                  id="shop-full-button"
+                  @click="changeShopState('full')"
+                  :variant="fullBtnVarient"
+                >
+                  <font-awesome-icon
+                    v-if="shop.status === 'full'"
+                    class="mr-2"
+                    size="xs"
+                    :style="{color:'#f67280', position: 'relative',top : '-1px'}"
+                    icon="circle"
+                  ></font-awesome-icon>訂單已滿
+                </b-button>
+                <b-tooltip
+                  v-if="shop.status !== 'full'"
+                  target="shop-full-button"
+                  triggers="hover"
+                >按這裡將您的店家設為已滿狀態，學生將無法下訂單！</b-tooltip>
+                <b-tooltip
+                  v-else
+                  target="shop-full-button"
+                  triggers="hover"
+                >您的店家目前已設為已滿狀態，學生無法向您下訂單！</b-tooltip>
               </b-button-group>
             </template>
           </template>
@@ -80,7 +134,7 @@ export default {
       isLoggedIn: false,
       type: "guest",
       shop: "",
-      student:"",
+      student: "",
       buttonVariant: {
         active: "primary",
         inactive: "outline-primary"
@@ -134,7 +188,7 @@ export default {
               console.log(response);
               if (response.data) {
                 self.shop = response.data;
-                console.log(self.shop);                
+                console.log(self.shop);
               }
             })
             .catch(function(error) {
@@ -202,13 +256,13 @@ export default {
 
     userName() {
       if (!this.isLoggedIn) return "";
-      if(this.type === 'student'){       
+      if (this.type === "student") {
         return this.student.name;
       }
-      if(this.type === 'shop'){
+      if (this.type === "shop") {
         return this.shop.name;
       }
-      return '';
+      return "";
     }
   },
   created() {
@@ -220,7 +274,12 @@ export default {
     });
     this.$bus.$on("navbar_update", () => {
       self.checkLogin();
-    })
+    });
+
+    this.sockets.subscribe("shop_change_self", data => {      
+      console.log("shop change self");
+      this.shop = data;
+    });
   }
 };
 </script>

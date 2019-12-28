@@ -67,6 +67,23 @@ export default {
       console.log(this.shopOrders);
     });
 
+    this.sockets.subscribe("order_change_self", data => {
+      // for shop
+      console.log("shop order self change");
+
+      for(let i = 0 ; i < this.shopOrders.length; ++i){
+        if(this.shopOrders[i]._id === data._id){
+          if(this.shopOrders[i].status === data.status){
+            console.log("Order change already applied, no need to edit.");
+          }else{
+            console.log("Order changed by self event.");
+            this.shopOrders[i].status = data.status;
+          }
+        }
+      }
+
+    });
+
     this.sockets.subscribe("order_change", data => {
       // for student
       console.log("order_ready");
