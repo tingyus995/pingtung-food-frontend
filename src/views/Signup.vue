@@ -99,7 +99,7 @@
       >建立帳號</button>
     </form>
 
-    <b-modal @ok="agreeTerm = true" id="term" scrollable title="學生帳號申請授權合約">
+    <b-modal @ok="agreeTerm = true" @cancel="agreeTerm = false" id="term" scrollable title="學生帳號申請授權合約">
       <p class="my-4" v-for="i in 20" :key="i">
         Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
         in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
@@ -224,7 +224,9 @@ export default {
       console.log(this.user);
 
       this.$http
-        .post("/student", this.user)
+        .post("/student", {
+          user :this.user,
+          code : this.vertificationCode})
         .then(function(response) {
           console.log(response);
           //self.$emit('signupComplete', response.data);
@@ -232,6 +234,7 @@ export default {
           localStorage.setItem("user", response.data.user.type);
 
           self.$bus.$emit("logged", "a newly-registered user logged in.");
+          self.$router.push({ name: "foods" });
         })
         .catch(function(error) {
           console.log(JSON.stringify(error.response.data));
