@@ -125,6 +125,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 .food-card {
+  transition: box-shadow .3s ease;
+  &:hover{
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.3) !important;
+  }
   .price {
     font-weight: bold;
   }

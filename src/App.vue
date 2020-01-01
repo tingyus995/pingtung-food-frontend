@@ -65,23 +65,29 @@ export default {
       console.log(data);
       this.shopOrders.push(data);
       console.log(this.shopOrders);
+
+      this.notifications.push({
+        variant : "info",
+        message: "接收到一個來自" + data.student.name + "的新訂單！"
+      });
+
+      console.log(this.notifications);
     });
 
     this.sockets.subscribe("order_change_self", data => {
       // for shop
       console.log("shop order self change");
 
-      for(let i = 0 ; i < this.shopOrders.length; ++i){
-        if(this.shopOrders[i]._id === data._id){
-          if(this.shopOrders[i].status === data.status){
+      for (let i = 0; i < this.shopOrders.length; ++i) {
+        if (this.shopOrders[i]._id === data._id) {
+          if (this.shopOrders[i].status === data.status) {
             console.log("Order change already applied, no need to edit.");
-          }else{
+          } else {
             console.log("Order changed by self event.");
             this.shopOrders[i].status = data.status;
           }
         }
       }
-
     });
 
     this.sockets.subscribe("order_change", data => {

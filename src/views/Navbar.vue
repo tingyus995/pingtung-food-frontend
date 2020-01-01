@@ -1,19 +1,36 @@
 <template>
   <div>
+    <div v-if="isLoggedIn" class="notification-count d-block d-sm-none" >    
+      <b-badge v-if="(orderCount + notifications.length) > 0" variant="danger">{{ orderCount + notifications.length }}</b-badge>
+    </div>
+    <div v-if="isLoggedIn" class="navigation-icon d-none d-sm-block d-lg-none" >
+      <ul>
+        <template v-if="type== 'student'">
+          <li><router-link :to="{ name: 'foods' }" ><font-awesome-icon size="lg" icon="utensils"></font-awesome-icon></router-link></li>
+          <li><router-link :to="{ name: 'favorites' }" ><font-awesome-icon size="lg" icon="heart"></font-awesome-icon></router-link></li>
+          <li><router-link :to="{ name: 'cart' }" ><font-awesome-icon size="lg" icon="shopping-cart"></font-awesome-icon><b-badge v-if="orderCount > 0" variant="danger">{{orderCount }}</b-badge></router-link></li>
+          <li><router-link :to="{ name: 'orderhistory' }" ><font-awesome-icon size="lg" icon="clipboard-list"></font-awesome-icon><b-badge v-if="notifications.length > 0" variant="danger">{{ notifications.length }}</b-badge></router-link></li>
+          <li><router-link :to="{ name: 'profile' }" ><font-awesome-icon size="lg" icon="user"></font-awesome-icon></router-link></li>
+        </template>
+        <template v-if="type== 'shop'">
+          <li><router-link :to="{ name: 'myfoods' }" ><font-awesome-icon size="lg" icon="utensils"></font-awesome-icon></router-link></li>
+          <li><router-link :to="{ name: 'addfood' }" ><font-awesome-icon size="lg" icon="plus-square"></font-awesome-icon></router-link></li>
+          <li><router-link :to="{ name: 'orderlist' }" ><font-awesome-icon size="lg" icon="clipboard-list"></font-awesome-icon><b-badge v-if="notifications.length > 0" variant="danger">{{ notifications.length }}</b-badge></router-link></li>
+          <li><router-link :to="{ name: 'shopprofile' }" ><font-awesome-icon size="lg" icon="store-alt"></font-awesome-icon></router-link></li>
+          
+        </template>
+      </ul>
+      
+    </div>
     <b-navbar toggleable="lg" type="light" variant="light" fixed="top">
-      <b-navbar-brand href="#">探索屏東美食</b-navbar-brand>
+      <b-navbar-brand :to="{ name : 'home'}">探索屏東美食</b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav>
-          <b-nav-item>
-            <router-link to="/">Home</router-link>
-          </b-nav-item>
-          <b-nav-item>
-            <router-link to="/about">About</router-link>
-          </b-nav-item>
-
+        <b-navbar-nav>          
+            <b-nav-item to="/" >首頁</b-nav-item>  
+            <b-nav-item to="/about" >關於</b-nav-item>
           <template v-if="isLoggedIn">
             <template v-if="type== 'student'">
               <b-nav-item :to="{ name: 'foods' }">探索美食</b-nav-item>
@@ -285,11 +302,62 @@ export default {
 </script>
 <style lang="scss">
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-.router-link-exact-active {
+.navbar-nav .router-link-exact-active {
   font-weight: bold;
   background: #ddd;
   border-radius: 5px;
 }
+nav{
+  .logo-img{
+    height:25px;
+  }
+}
+.navigation-icon{
+  position: fixed;
+  z-index:1031;
+  top:0;
+  left:150px;
+  height: 56px;
+  /*background:#ddd;*/
+
+  a{
+    transition: color .4s ease;
+    color:#999999;
+    &:hover{
+      color:#1b2a49;
+    }
+    &.router-link-exact-active{
+      color:#465881;
+    }
+
+  }
+  ul{
+    padding-left:0;
+    li{
+      height:56px;
+      display: inline-block;
+      text-align:center;
+      width:56px;
+      text-align:center;
+      line-height: 56px;
+      .badge{
+        position: relative;
+        top:-10px;
+        left:-5px;
+      }
+
+    }
+  }
+
+}
+.notification-count{
+  position: fixed;
+  z-index:1032;
+  top:0;
+  right:6px;
+  
+}
+
 /*#nav {
   padding: 30px;
 

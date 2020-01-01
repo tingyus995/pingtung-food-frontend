@@ -16,7 +16,8 @@
         class="btn btn-sm btn-warning"
         @click="removeFromFavorite(props.item)"
       >
-        <font-awesome-icon icon="heart-broken"></font-awesome-icon>移除最愛
+        <font-awesome-icon class="mr-1" icon="heart-broken"></font-awesome-icon>移除最愛
+        <b-badge variant="danger">{{props.item.likes.length }}</b-badge>
       </button>
 
       <button
@@ -25,7 +26,8 @@
         class="btn btn-sm btn-warning"
         @click="addToFavorite(props.item)"
       >
-        <font-awesome-icon icon="heart"></font-awesome-icon>加到最愛
+        <font-awesome-icon class="mr-1" icon="heart"></font-awesome-icon>加到最愛
+        <b-badge variant="danger">{{props.item.likes.length }}</b-badge>
       </button>
     </FoodCardList>
   </div>
@@ -164,7 +166,7 @@ export default {
       console.log(data);
       this.foods = this.foods.filter(food => {
         return food._id !== data._id;
-      });      
+      });
     });
     this.sockets.subscribe("food_change", data => {
       console.log("food changed");

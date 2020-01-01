@@ -17,7 +17,8 @@
       class="btn btn-sm btn-warning"
       @click="removeFromFavorite(props.item)"
     >
-      <font-awesome-icon icon="heart-broken"></font-awesome-icon>移除最愛
+      <font-awesome-icon class="mr-1" icon="heart-broken"></font-awesome-icon>移除最愛
+      <b-badge variant="danger">{{props.item.likes.length }}</b-badge>
     </button>
 
     <button
