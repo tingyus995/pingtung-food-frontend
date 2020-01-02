@@ -50,7 +50,7 @@
               <b-nav-item :to="{ name: 'myfoods' }">我的食物</b-nav-item>
 
               <b-nav-item :to="{ name: 'addfood' }">新增食物</b-nav-item>
-              <b-nav-item :to="{ name: 'orderlist' }">檢視訂單</b-nav-item>
+              <b-nav-item :to="{ name: 'orderlist' }">檢視訂單<b-badge v-if="notifications.length > 0" variant="info">{{ notifications.length }}</b-badge></b-nav-item>
 
               <b-nav-item :to="{ name: 'shopprofile' }">店家設定</b-nav-item>
 
